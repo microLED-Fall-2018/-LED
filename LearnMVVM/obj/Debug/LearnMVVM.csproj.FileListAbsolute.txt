@@ -1,0 +1,17 @@
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\bin\Debug\LearnMVVM.exe.config
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\bin\Debug\LearnMVVM.exe
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\bin\Debug\LearnMVVM.pdb
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\bin\Debug\PropertyChanged.dll
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\bin\Debug\PropertyChanged.xml
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\LearnMVVM.csprojResolveAssemblyReference.cache
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\MainWindow.g.cs
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\App.g.cs
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\LearnMVVM_Content.g.cs
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\LearnMVVM_MarkupCompile.cache
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\LearnMVVM_MarkupCompile.lref
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\MainWindow.baml
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\LearnMVVM.g.resources
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\LearnMVVM.Properties.Resources.resources
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\LearnMVVM.csproj.GenerateResource.Cache
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\LearnMVVM.exe
+C:\Users\rohan\Documents\Visual Studio 2015\Projects\SeniorProject\LearnMVVM\obj\Debug\LearnMVVM.pdb
