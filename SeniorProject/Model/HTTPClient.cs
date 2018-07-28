@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SeniorProject.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace SeniorProject.Model
 {
     static class HTTPClient
     {
-        public static void PostSet(Set set)
+        public static void PostSet(SetViewModel set)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://url");
             httpWebRequest.ContentType = "application/json";
@@ -33,7 +34,7 @@ namespace SeniorProject.Model
             }
         }
 
-        public static void PostPattern(Pattern pattern)
+        public static void PostPattern(PatternViewModel pattern)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://url");
             httpWebRequest.ContentType = "application/json";
@@ -55,7 +56,7 @@ namespace SeniorProject.Model
             }
         }
 
-        public static Set GetSet(int setID)
+        public static SetViewModel GetSet(int setID)
         {
             string json;
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://url");
@@ -70,7 +71,7 @@ namespace SeniorProject.Model
             return JSONConverter.DeserializeJSONSet(json);
         }
 
-        public static Pattern GetPattern(int patternID)
+        public static PatternViewModel GetPattern(int patternID)
         {
             string json;
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://url");

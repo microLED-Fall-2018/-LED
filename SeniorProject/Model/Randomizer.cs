@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SeniorProject.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace SeniorProject.Model
 {
     class Randomizer
     {
-        public static Pattern randomPattern
+        public static PatternViewModel randomPattern
         {
             get
             {
@@ -16,7 +17,7 @@ namespace SeniorProject.Model
             }
         }
 
-        public static Color randomColor
+        public static ColorViewModel randomColor
         {
             get
             {
@@ -24,11 +25,11 @@ namespace SeniorProject.Model
             }
         }
 
-        private static Pattern RandomizePattern()
+        private static PatternViewModel RandomizePattern()
         {
             Random rand = new Random();
             int numColors = rand.Next(20,100);
-            Pattern randomPattern = new Pattern();
+            PatternViewModel randomPattern = new PatternViewModel();
             for(int i = 0; i < numColors; i++)
             {
                 randomPattern.Insert(RandomizeColor(rand.Next(0,10000)));
@@ -38,18 +39,18 @@ namespace SeniorProject.Model
             return randomPattern;
         }
 
-        private static Color RandomizeColor()
+        private static ColorViewModel RandomizeColor()
         {
             //                              random R         random G            random B            ensure that the brightness isn't too low and there's some strobe
             Random rand = new Random();
-            return new Color(rand.Next(0, 255), rand.Next(0, 255), rand.Next(0, 255), rand.Next(0, 100) > 50 ? rand.Next(50, 100) : 0, rand.Next(50, 500));
+            return new ColorViewModel((byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)(rand.Next(0, 100) > 50 ? rand.Next(50, 100) : 0), rand.Next(50, 500));
         }
 
-        private static Color RandomizeColor(int seed)
+        private static ColorViewModel RandomizeColor(int seed)
         {
             //                              random R         random G            random B            ensure that the brightness isn't too low and there's some strobe
             Random rand = new Random(seed);
-            return new Color(rand.Next(0, 255), rand.Next(0, 255), rand.Next(0, 255), rand.Next(0, 100) > 50 ? rand.Next(50, 100) : 0, rand.Next(50, 500));
+            return new ColorViewModel((byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)(rand.Next(0, 100) > 50 ? rand.Next(50, 100) : 0), rand.Next(50, 500));
         }
     }
 }

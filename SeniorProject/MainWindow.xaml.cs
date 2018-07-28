@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SeniorProject.Model;
 using System.Web;
+using SeniorProject.ViewModel;
 
 namespace SeniorProject
 {
@@ -32,8 +33,12 @@ namespace SeniorProject
             string test = JSONConverter.SerializeSet(set);
             Set someSet = JSONConverter.DeserializeJSONSet(test);
             */
+            ColorGuruViewModel blah = new ColorGuruViewModel(this);
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel(this);
+            this.DataContext = blah;
+            patternList.ItemsSource = blah.activeSet.patterns;
+            //ColorListView.ItemsSource = blah.activePattern.colors;
+            Background = new SolidColorBrush(Color.FromArgb(0xFF, 53, 56, 61));
         }
     }
 }

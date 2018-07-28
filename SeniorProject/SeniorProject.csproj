@@ -107,8 +107,12 @@
     </ApplicationDefinition>
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\ColorGuruViewModel.cs" />
+    <Compile Include="ViewModel\ColorViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\PatternViewModel.cs" />
+    <Compile Include="ViewModel\RandomizerViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
+    <Compile Include="ViewModel\SetViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -123,10 +127,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\ColorGuru.cs" />
     <Compile Include="Model\HTTPClient.cs" />
     <Compile Include="Model\JSONConverter.cs" />
-    <Compile Include="Model\Models.cs" />
     <Compile Include="Model\Randomizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
