@@ -13,9 +13,11 @@ namespace SeniorProjectMVC
         private Set set;
         private List<Pattern> patterns;
         private Pattern currentPattern;
+        private SerialCommunicator serialCom;
 
         public ColorGuruController(Form1 window)
         {
+            serialCom = new SerialCommunicator();
             this.window = window;
             set = new Set();
             patterns = new List<Pattern>();
@@ -32,6 +34,8 @@ namespace SeniorProjectMVC
             window.RemovePatternButtonClicked += RemovePatternButtonClickedHandler;
             window.ColorSelectionChanged += ColorSelectionChangedHandler;
             window.ExportButtonClicked += ExportButtonClickedHandler;
+            window.ConnectButtonClicked += AddConnectButtonHandler;
+            window.DisconnectButtonClicked += AddDisconnectButtonHandler; 
         }
 
         public void AddColorHandler(Color c, int duration)
@@ -64,6 +68,7 @@ namespace SeniorProjectMVC
         public void ColorChangedHandler(Color color, int index)
         {
             currentPattern.colors[index].color = color;
+            serialCom.setColor(color);
         }
 
         public void LoadPatternClickedHandler(int index)
@@ -83,6 +88,16 @@ namespace SeniorProjectMVC
             patterns.RemoveAt(index);
         }
         
+        public void AddConnectButtonHandler(string port)
+        {
+            serialCom.connect(port);
+        }
+
+        public void AddDisconnectButtonHandler()
+        {
+            serialCom.disconnect();
+        }
+
         public void RemovePatternButtonClickedHandler(int index)
         {
             patterns.Add(set.patterns[index]);
@@ -92,6 +107,7 @@ namespace SeniorProjectMVC
         public void ColorSelectionChangedHandler(int index)
         {
             window.DurationLoader = currentPattern.colors[index].duration;
+            serialCom.setColor(currentPattern.colors[index].color);
         }
 
         public void ExportButtonClickedHandler(string fileName)

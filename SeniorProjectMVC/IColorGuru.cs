@@ -20,6 +20,8 @@ namespace SeniorProjectMVC
         event Action<int> RemovePatternButtonClicked;
         event Action<int> ColorSelectionChanged;
         event Action<string> ExportButtonClicked;
+        event Action<string> ConnectButtonClicked;
+        event Action DisconnectButtonClicked;
 
         Color ColorAdder { set; }
         int DurationLoader { set; }

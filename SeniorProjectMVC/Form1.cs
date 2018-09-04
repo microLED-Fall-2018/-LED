@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,12 @@ namespace SeniorProjectMVC
 
             InitializeComponent();
             colorListView.ItemSelectionChanged += colorListView_ItemSelectionChanged;
+
+            String[] ports = SerialPort.GetPortNames();
+            foreach (String s in ports)
+            {
+                portComboBox.Items.Add(s);
+            }
         }
 
         public event Action<Color, int> AddColorClicked;
@@ -52,6 +59,8 @@ namespace SeniorProjectMVC
         public event Action<int> RemovePatternButtonClicked;
         public event Action<int> ColorSelectionChanged;
         public event Action<string> ExportButtonClicked;
+        public event Action<string> ConnectButtonClicked;
+        public event Action DisconnectButtonClicked;
 
         private void selectColorButton_Click(object sender, EventArgs e)
         {
@@ -176,6 +185,19 @@ namespace SeniorProjectMVC
                 {
                     ExportButtonClicked(saveDialog.FileName);
                 }
+            }
+        }
+
+        private void connectButton_Click(object sender, EventArgs e)
+        {
+            if(portComboBox.Text.Length > 0 && connectButton.Text == "Connect")
+            {
+                ConnectButtonClicked(portComboBox.Text);
+                connectButton.Text = "Disconnect";
+            } else if (connectButton.Text == "Disconnect")
+            {
+                DisconnectButtonClicked();
+                connectButton.Text = "Connect";
             }
         }
     }

@@ -53,6 +53,8 @@
             this.SetPatterns = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.exportButton = new System.Windows.Forms.Button();
             this.loadPatternButton = new System.Windows.Forms.Button();
+            this.connectButton = new System.Windows.Forms.Button();
+            this.portComboBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.selectedColorBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.durationTrackBar)).BeginInit();
             this.SuspendLayout();
@@ -285,11 +287,31 @@
             this.loadPatternButton.UseVisualStyleBackColor = true;
             this.loadPatternButton.Click += new System.EventHandler(this.loadPatternButton_Click);
             // 
+            // connectButton
+            // 
+            this.connectButton.Location = new System.Drawing.Point(639, 267);
+            this.connectButton.Name = "connectButton";
+            this.connectButton.Size = new System.Drawing.Size(75, 23);
+            this.connectButton.TabIndex = 29;
+            this.connectButton.Text = "Connect";
+            this.connectButton.UseVisualStyleBackColor = true;
+            this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
+            // 
+            // portComboBox
+            // 
+            this.portComboBox.FormattingEnabled = true;
+            this.portComboBox.Location = new System.Drawing.Point(535, 267);
+            this.portComboBox.Name = "portComboBox";
+            this.portComboBox.Size = new System.Drawing.Size(98, 21);
+            this.portComboBox.TabIndex = 30;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(726, 450);
+            this.Controls.Add(this.portComboBox);
+            this.Controls.Add(this.connectButton);
             this.Controls.Add(this.loadPatternButton);
             this.Controls.Add(this.exportButton);
             this.Controls.Add(this.setListView);
@@ -346,6 +368,8 @@
         private System.Windows.Forms.ColumnHeader SetPatterns;
         private System.Windows.Forms.Button exportButton;
         private System.Windows.Forms.Button loadPatternButton;
+        private System.Windows.Forms.Button connectButton;
+        private System.Windows.Forms.ComboBox portComboBox;
     }
 }
 

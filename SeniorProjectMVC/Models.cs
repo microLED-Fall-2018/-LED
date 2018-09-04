@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -97,6 +98,65 @@ namespace SeniorProjectMVC
                 {
                     sw.Write(Saver.SerializeSet(set));
                 }
+            }
+        }
+    }
+
+    public class SerialCommunicator
+    {
+        private SerialPort port;
+
+        public SerialCommunicator()
+        {
+        }
+
+        public bool connect(string selectedPort)
+        {
+            try
+            {
+                port = new SerialPort(selectedPort, 9600, Parity.None, 8, StopBits.One);
+                port.Open();
+                port.Write("!.");
+                return true;
+            } catch
+            {
+                return false;
+            }
+        }
+
+        public void disconnect()
+        {
+            port.Write("R255.");
+            port.Write("G255.");
+            port.Write("B255.");
+            port.Write("?.");
+            port.Close();
+        }
+
+        public void setColor(Color c)
+        {
+            int r = 255 - c.R;
+            int g = 255 - c.G;
+            int b = 255 - c.B;
+            // keep values in range of 0 to 255
+            r = r > 255 ? 255 : r;
+            r = r < 0 ? 0 : r;
+            g = g > 255 ? 255 : g;
+            g = g < 0 ? 0 : g;
+            b = b > 255 ? 255 : b;
+            b = b < 0 ? 0 : b;
+
+            if (r > 0)
+            {
+                port.Write($"R{r}.");
+            }
+            if (g > 0)
+            {
+                port.Write($"G{g}.");
+            }
+            if (b > 0)
+            {
+                port.Write($"B{b}.");
             }
         }
     }
