@@ -3,7 +3,6 @@
  * Step	 TC4, 16-bit
  */
 #include <atmel_start.h>
-#include <string.h>
 
 #define PORTA PORT->Group[0]
 #define PORTB PORT->Group[1]
@@ -39,13 +38,11 @@ typedef struct {
 	uint8_t curr;
 	} instTracker;
 	
-instruction shortDemo[200] = {  {0x00, 5, 4, 0xff},
-								{0x01, 10, 4, 128},
-								{0x41, 20, 4, 255},
-								{0x80, 3, 4, 255},
-								{0x81, 5, 4, 128}};
-
-
+instruction shortDemo[200] = {  {0x00, 1, 1, 255},
+								{0x01, 1, 1, 0},
+								{0x40, 1, 1, 0},
+								{0x41, 1, 1, 255},
+								{0x81, 2, 4, 0}};			
 	
 /* Steps per beat lookup Table
  * A quick table to find the number of steps/beat in bpm
@@ -80,11 +77,13 @@ instruction sequences[MAXSEQ][MAXINST];
 uint8_t sequenceCurr = 0;
 	
 instTracker tracker[3]; // Tracks the instructions for each color
-uint8_t isOn[3]; // For sequences, is the instruction currently on?
 uint8_t intensity[3];
 uint16_t nextAction[3]; // the count the next action should occur on. Should wrap around (say if at 65000 and next in 1000)
 uint16_t diffs[3]; // increase over current count for next action
-uint8_t beatsRemaining[3];
+uint16_t countMax;
+
+uint8_t beatsRemaining[3] = {0, 0, 0};
+uint8_t isOn[3] = {0, 0, 0}; // For sequences, is the instruction currently on?
 
 void populateTracker(instruction[]);
 void updateStepsPerBeat(uint8_t);
@@ -97,22 +96,27 @@ int main(void)
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 	
-	//updateStepsPerBeat(bpm);
+	// For testing, instantiate sequence 0 with short Demo
+	int i;
+	for (i = 0; i < 200; i++)
+		sequences[sequenceCurr][i] = shortDemo[i];
+	
+	updateStepsPerBeat(bpm);
 	nextBeat = stepsPerBeat;
+	countMax = (65536 / stepsPerBeat) * stepsPerBeat; // Hopefully the truncation works this out...
 	
 	// For testing only.  Can be removed once working with actual flash sequences
-	//memcpy(sequences[0], shortDemo, 200 * sizeof(instruction));
 	PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
 	PORTA.DIRSET.reg = 1 << 2 | 1 << 4 | 1 << 5;
 		
-	populateTracker(shortDemo);
+	populateTracker(sequences[sequenceCurr]);
 	tracker[RED].curr = tracker[RED].first;
 	tracker[GREEN].curr = tracker[GREEN].first;
 	tracker[BLUE].curr = tracker[BLUE].first;
 	
-	processInstruction(shortDemo[tracker[RED].curr]);	
-	processInstruction(shortDemo[tracker[GREEN].curr]);
-	processInstruction(shortDemo[tracker[BLUE].curr]);
+	processInstruction(sequences[sequenceCurr][tracker[RED].curr]);	
+	processInstruction(sequences[sequenceCurr][tracker[GREEN].curr]);
+	processInstruction(sequences[sequenceCurr][tracker[BLUE].curr]);
 	
 	while(1)
 	{	
@@ -120,71 +124,50 @@ int main(void)
 		uint16_t stepCurr = STEP_TIMER.COUNT.reg;
 		
 		if (stepCurr >= nextAction[RED])
-		{	
-			//nextAction[RED] += diffs[RED];
 			flash(RED, stepCurr);
-		}
 		if (stepCurr >= nextAction[GREEN])
-		{
-			//nextAction[GREEN] += diffs[GREEN];
 			flash(GREEN, stepCurr);
-		}
 		if (stepCurr >= nextAction[BLUE])
-		{
-			//nextAction[BLUE] += diffs[BLUE];
 			flash(BLUE, stepCurr);
-		}
-		/*
-		if (stepCurr == nextBeat)
-		{	
-			beatsRemaining[RED]--;
-			beatsRemaining[GREEN]--;
-			beatsRemaining[BLUE]--;
 			
-			if (beatsRemaining[RED] <= 0)
+		if (stepCurr >= countMax)
+		{
+			TC4->COUNT16.COUNT.reg = 0;
+			nextBeat = stepsPerBeat;
+		}
+				
+		if (stepCurr >= nextBeat)
+		{	
+			nextBeat = stepCurr + stepsPerBeat;
+			
+			if (--beatsRemaining[RED] <= 0)
 			{
 				nextInstruction(RED);
 				processInstruction(sequences[sequenceCurr][tracker[RED].curr]);
 			}
-			if (beatsRemaining[GREEN] <= 0)
+			if (--beatsRemaining[GREEN] <= 0)
 			{
 				nextInstruction(GREEN);
 				processInstruction(sequences[sequenceCurr][tracker[GREEN].curr]);
 			}
-			if (beatsRemaining[BLUE] <= 0)
+			if (--beatsRemaining[BLUE] <= 0)
 			{
 				nextInstruction(BLUE);
 				processInstruction(sequences[sequenceCurr][tracker[BLUE].curr]);
 			}
 		}
-		*/
 		
-		/*if ((intenCurr <= intensity[RED]) && isOn[RED]) 
-			PORTA.OUT.reg &= ~(1 << 2);
-		else
-			PORTA.OUT.reg |= 1 << 2;
-			
-		if ((intenCurr <= intensity[GREEN]) && isOn[GREEN])
-			PORTA.OUT.reg &= ~(1 << 4);
-		else
-			PORTA.OUT.reg |= 1 << 4;
-							
-		if ((intenCurr <= intensity[BLUE]) && isOn[BLUE])
-			PORTA.OUT.reg &= ~(1 << 5);	
-		else
-			PORTA.OUT.reg |= 1 << 5;*/
-
-		if (intenCurr <= intensity[RED] && isOn[RED])
+		if (intenCurr < intensity[RED] && isOn[RED])
 			PORTA.OUT.reg &= ~(1 << 2);
 		else
 			PORTA.OUT.reg |= 1 << 2;
 
-		if (intenCurr <= intensity[GREEN] && isOn[GREEN])
+		if (intenCurr < intensity[GREEN] && isOn[GREEN])
 			PORTA.OUT.reg &= ~(1 << 4);
 		else
 			PORTA.OUT.reg |= 1 << 4;
 		
-		if (intenCurr <= intensity[BLUE] && isOn[BLUE])
+		if (intenCurr < intensity[BLUE] && isOn[BLUE])
 			PORTA.OUT.reg &= ~(1 << 5);
 		else
 			PORTA.OUT.reg |= 1 << 5;
@@ -209,16 +192,10 @@ void populateTracker(instruction insts[200])
 	
 	tracker[RED].first = 0;
 	tracker[RED].curr = tracker[RED].first;
-
-	if (insts[i].inst & 0x01)
-		tracker[RED].next = tracker[RED].first;
-	else
-		tracker[RED].next = tracker[RED].first + 1;
 	
 	while (count < 3) // 0 - Red, 1 - Green, 2 - Blue
 	{
-			/*
-			PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
+/*			PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
 			
 			if (count == RED)
 			PORTA.OUT.reg &= ~(1 << 2);
@@ -233,13 +210,12 @@ void populateTracker(instruction insts[200])
 			
 			PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
 			
-			delay_ms(250);
-			*/
+			delay_ms(250);*/
 		
 		// A 1 in the 24th position indicates the last instruction in a color
 		if(insts[i++].inst & 0x01)
 		{
-/*			PORTA.OUT.reg &= ~(1 << 2 | 1 << 4 | 1 << 5);
+	/*		PORTA.OUT.reg &= ~(1 << 2 | 1 << 4 | 1 << 5);
 			delay_ms(250);
 			PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
 			delay_ms(250);*/
@@ -249,7 +225,6 @@ void populateTracker(instruction insts[200])
 			if (count <= BLUE)
 			{
 				tracker[count].first = i; // i has already been incremented
-				tracker[count].next = tracker[count].first + 1;
 			}
 		}
 	}
@@ -292,8 +267,8 @@ void processInstruction(instruction inst)
 	{
 		case FLASH:
 			intensity[whichColor] = inst.bright;
-			isOn[whichColor] = 1;
-			diffs[whichColor] = stepsPerBeat / (inst.rate >> 1);
+			isOn[whichColor] = isOn[whichColor]? 1 : 0;
+			diffs[whichColor] = (stepsPerBeat / inst.rate) >> 1;
 			nextAction[whichColor] = STEP_TIMER.COUNT.reg + diffs[whichColor];	
 			beatsRemaining[whichColor] = inst.dur;
 			break;
@@ -317,14 +292,15 @@ void flash(uint8_t color, uint16_t count)
 {
 	isOn[color] = !isOn[color];
 	nextAction[color] = count + diffs[color];
+	
+	if (nextAction[color] >= countMax)
+		nextAction[color] -= countMax;
 }
 
 void nextInstruction(uint8_t color)
 {
-	tracker[color].curr = tracker[color].next;
-	
 	if (tracker[color].curr == tracker[color].last)
-		tracker[color].next = tracker[color].first;
+		tracker[color].curr = tracker[color].first;
 	else
-		tracker[color].next = tracker[color].curr + 1;
+		tracker[color].curr = tracker[color].curr + 1;
 }

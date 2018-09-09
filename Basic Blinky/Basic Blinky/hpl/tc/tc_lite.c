@@ -142,12 +142,11 @@ int8_t StepCount_init()
 	//		 | 0 << TC_EVCTRL_TCINV_Pos /* TC Inverted Event Input: disabled */
 	//		 | 0); /* Event Action: 0 */
 
-	hri_tc_write_INTEN_reg(TC4,
-	                       1 << TC_INTENSET_MC0_Pos       /* Match or Capture Channel 0 Interrupt Enable: enabled */
-	                           | 0 << TC_INTENSET_MC1_Pos /* Match or Capture Channel 1 Interrupt Enable: disabled */
-	                           | 0 << TC_INTENSET_SYNCRDY_Pos /* Synchronization Ready Interrupt Enable: disabled */
-	                           | 0 << TC_INTENSET_ERR_Pos     /* Error Interrupt Enable: disabled */
-	                           | 0 << TC_INTENSET_OVF_Pos);   /* Overflow Interrupt enable: disabled */
+	// hri_tc_write_INTEN_reg(TC4,0 << TC_INTENSET_MC0_Pos /* Match or Capture Channel 0 Interrupt Enable: disabled */
+	//		 | 0 << TC_INTENSET_MC1_Pos /* Match or Capture Channel 1 Interrupt Enable: disabled */
+	//		 | 0 << TC_INTENSET_SYNCRDY_Pos /* Synchronization Ready Interrupt Enable: disabled */
+	//		 | 0 << TC_INTENSET_ERR_Pos /* Error Interrupt Enable: disabled */
+	//		 | 0 << TC_INTENSET_OVF_Pos); /* Overflow Interrupt enable: disabled */
 
 	hri_tc_write_CTRLA_ENABLE_bit(TC4, 1 << TC_CTRLA_ENABLE_Pos); /* Enable: enabled */
 

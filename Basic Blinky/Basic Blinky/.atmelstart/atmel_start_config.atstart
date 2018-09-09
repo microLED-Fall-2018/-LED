@@ -209,7 +209,7 @@ drivers:
       evctrl_tcinv: false
       intenset_control: true
       intenset_err: false
-      intenset_mc0: true
+      intenset_mc0: false
       intenset_mc1: false
       intenset_ovf: false
       intenset_syncrdy: false
