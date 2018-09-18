@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeniorProject", "SeniorProject\SeniorProject.csproj", "{ABCA71A5-E88F-4A08-9171-0D18A6E2CBBF}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearnMVVM", "LearnMVVM\LearnMVVM.csproj", "{2AF5155C-B1E2-4846-9E5A-350262D39EB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeniorProjectMVC", "SeniorProjectMVC\SeniorProjectMVC.csproj", "{C9B63D94-07F3-4FFE-8209-A83DC36C0E29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequenceApp", "SequenceApp\SequenceApp.csproj", "{F84E3176-8104-4BA2-B697-1E9E0F89F0AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,8 +35,15 @@ Global
 		{C9B63D94-07F3-4FFE-8209-A83DC36C0E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9B63D94-07F3-4FFE-8209-A83DC36C0E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9B63D94-07F3-4FFE-8209-A83DC36C0E29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F84E3176-8104-4BA2-B697-1E9E0F89F0AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F84E3176-8104-4BA2-B697-1E9E0F89F0AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F84E3176-8104-4BA2-B697-1E9E0F89F0AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F84E3176-8104-4BA2-B697-1E9E0F89F0AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {764728FF-EB76-4FE9-BB73-CB2DD2A4191C}
 	EndGlobalSection
 EndGlobal
