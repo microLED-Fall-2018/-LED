@@ -97,8 +97,8 @@
           <AcmeProjectActionInfo Action="File" Source="hri/hri_usb_d21.h" IsConfig="false" Hash="agq0gHuv5nfZ5aG2fOCQwA" />
           <AcmeProjectActionInfo Action="File" Source="hri/hri_wdt_d21.h" IsConfig="false" Hash="7CgqpyY1y0K0MWo9DkOrlQ" />
           <AcmeProjectActionInfo Action="File" Source="main.c" IsConfig="false" Hash="k0AH7j+BrmdFhBPzCCMptA" />
-          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="wazPM/uldckrODRMe9hhUw" />
-          <AcmeProjectActionInfo Action="File" Source="driver_init.h" IsConfig="false" Hash="2+gQdcHP78qRHo8OR2bPGw" />
+          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="A6x9oZ9QDOS0weZOgvhr5g" />
+          <AcmeProjectActionInfo Action="File" Source="driver_init.h" IsConfig="false" Hash="e4CwqxfH5eN9SWJaGtoaAg" />
           <AcmeProjectActionInfo Action="File" Source="atmel_start_pins.h" IsConfig="false" Hash="JS7lcW/59sN+Bb0xf5LjgQ" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.h" IsConfig="false" Hash="FVtUMrZTRgYfz8skp36UUw" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.c" IsConfig="false" Hash="ktkB/D+YINGKHPIQ5kckOQ" />
@@ -115,15 +115,17 @@
           <AcmeProjectActionInfo Action="File" Source="hpl/pm/hpl_pm_base.h" IsConfig="false" Hash="T2mwlja7rLI0u564Rgn0Dw" />
           <AcmeProjectActionInfo Action="File" Source="hpl/port/hpl_gpio_base.h" IsConfig="false" Hash="XsyO6HptLFNEGxGJG040Iw" />
           <AcmeProjectActionInfo Action="File" Source="hpl/sysctrl/hpl_sysctrl.c" IsConfig="false" Hash="eQqPWYKMdDlz1qVb4tBemw" />
-          <AcmeProjectActionInfo Action="File" Source="hpl/tc/tc_lite.c" IsConfig="false" Hash="Em7u11bvyGrnYD815JVp4g" />
-          <AcmeProjectActionInfo Action="File" Source="hpl/tc/tc_lite.h" IsConfig="false" Hash="UumSBA82Xhh0Felzqsk5Tg" />
+          <AcmeProjectActionInfo Action="File" Source="hpl/tc/tc_lite.c" IsConfig="false" Hash="VjxW83Lth3xaI3XducJtaA" />
+          <AcmeProjectActionInfo Action="File" Source="hpl/tc/tc_lite.h" IsConfig="false" Hash="4x0NKi1eKn1l++xeCJSaxA" />
+          <AcmeProjectActionInfo Action="File" Source="hpl/tcc/tcc_lite.c" IsConfig="false" Hash="2QbRcnetki0vfFWM1U6z0w" />
+          <AcmeProjectActionInfo Action="File" Source="hpl/tcc/tcc_lite.h" IsConfig="false" Hash="dWQxAg8nqsUUEn6qxOAOYQ" />
           <AcmeProjectActionInfo Action="File" Source="atmel_start.h" IsConfig="false" Hash="9RBG5E2ViQiSP2Gn4/FGpA" />
           <AcmeProjectActionInfo Action="File" Source="atmel_start.c" IsConfig="false" Hash="1RHIE7zTtYK4DURNPUqF9w" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_dmac_config.h" IsConfig="true" Hash="epQJaS6fYVwOO2L9+1CkQg" />
-          <AcmeProjectActionInfo Action="File" Source="config/hpl_gclk_config.h" IsConfig="true" Hash="SYz71vnTXc3x+L1+j/zAfg" />
+          <AcmeProjectActionInfo Action="File" Source="config/hpl_gclk_config.h" IsConfig="true" Hash="KN0sjCqdK6EdH6+tWtaO6w" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_pm_config.h" IsConfig="true" Hash="GH0DautnKY3X7yLEFG4tgA" />
-          <AcmeProjectActionInfo Action="File" Source="config/hpl_sysctrl_config.h" IsConfig="true" Hash="Ba4iK873K10dYe/h/VRU9A" />
-          <AcmeProjectActionInfo Action="File" Source="config/peripheral_clk_config.h" IsConfig="true" Hash="SKjIASXWAQuzmyPNm2g09w" />
+          <AcmeProjectActionInfo Action="File" Source="config/hpl_sysctrl_config.h" IsConfig="true" Hash="X13pwFfkH/55IzAGH+48Xg" />
+          <AcmeProjectActionInfo Action="File" Source="config/peripheral_clk_config.h" IsConfig="true" Hash="kuNmP2jGo9PtF7XkVxJ5rw" />
         </AcmeActionInfos>
         <NonsecureFilesInfo />
       </AcmeProjectConfig>
@@ -182,6 +184,7 @@
       <Value>../hpl/port</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/tc</Value>
+      <Value>../hpl/tcc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -217,6 +220,7 @@
       <Value>../hpl/port</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/tc</Value>
+      <Value>../hpl/tcc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -236,6 +240,7 @@
       <Value>../hpl/port</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/tc</Value>
+      <Value>../hpl/tcc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -271,6 +276,7 @@
       <Value>../hpl/port</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/tc</Value>
+      <Value>../hpl/tcc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -308,6 +314,7 @@
       <Value>../hpl/port</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/tc</Value>
+      <Value>../hpl/tcc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -328,6 +335,7 @@
       <Value>../hpl/port</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/tc</Value>
+      <Value>../hpl/tcc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -517,6 +525,12 @@
     <Compile Include="hpl\sysctrl\hpl_sysctrl.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="hpl\tcc\tcc_lite.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="hpl\tcc\tcc_lite.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="hpl\tc\tc_lite.c">
       <SubType>compile</SubType>
     </Compile>
@@ -622,6 +636,7 @@
     <Folder Include="hpl\pm\" />
     <Folder Include="hpl\port\" />
     <Folder Include="hpl\sysctrl\" />
+    <Folder Include="hpl\tcc\" />
     <Folder Include="hpl\tc\" />
     <Folder Include="hri\" />
   </ItemGroup>

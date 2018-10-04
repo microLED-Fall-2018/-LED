@@ -23,7 +23,7 @@ drivers:
     configuration:
       enable_gclk_gen_0: true
       enable_gclk_gen_1: true
-      enable_gclk_gen_2: false
+      enable_gclk_gen_2: true
       enable_gclk_gen_3: false
       enable_gclk_gen_4: false
       enable_gclk_gen_5: false
@@ -40,7 +40,7 @@ drivers:
       gclk_arch_gen_1_oe: false
       gclk_arch_gen_1_oov: false
       gclk_arch_gen_2_RUNSTDBY: false
-      gclk_arch_gen_2_enable: false
+      gclk_arch_gen_2_enable: true
       gclk_arch_gen_2_idc: false
       gclk_arch_gen_2_oe: false
       gclk_arch_gen_2_oov: false
@@ -69,13 +69,13 @@ drivers:
       gclk_arch_gen_7_idc: false
       gclk_arch_gen_7_oe: false
       gclk_arch_gen_7_oov: false
-      gclk_gen_0_div: 1
+      gclk_gen_0_div: 8
       gclk_gen_0_div_sel: false
       gclk_gen_0_oscillator: 8MHz Internal Oscillator (OSC8M)
-      gclk_gen_1_div: 100
+      gclk_gen_1_div: 800
       gclk_gen_1_div_sel: false
       gclk_gen_1_oscillator: 8MHz Internal Oscillator (OSC8M)
-      gclk_gen_2_div: 100
+      gclk_gen_2_div: 10
       gclk_gen_2_div_sel: false
       gclk_gen_2_oscillator: 8MHz Internal Oscillator (OSC8M)
       gclk_gen_3_div: 1
@@ -118,8 +118,8 @@ drivers:
         - name: CPU
           input: CPU
         configuration: {}
-  IntenClock:
-    user_label: IntenClock
+  redPWM:
+    user_label: redPWM
     definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TC3::driver_config_definition::8-bit.Counter.Mode::Lite:TC:Timer
     functionality: Timer
     api: Lite:TC:Timer
@@ -132,7 +132,7 @@ drivers:
       ctrla_control: true
       ctrla_enable: true
       ctrla_mode: 1
-      ctrla_prescaler: DIV4
+      ctrla_prescaler: DIV1
       ctrla_prescsync: GCLK
       ctrla_runstdby: false
       ctrla_wavegen: NFRQ
@@ -145,11 +145,66 @@ drivers:
       ctrlc_cpten1: false
       dbgctrl_control: false
       dbgctrl_dbgrun: false
-      evctrl_control: false
+      evctrl_control: true
       evctrl_evact: 'OFF'
       evctrl_mceo0: false
       evctrl_mceo1: false
       evctrl_ovfeo: false
+      evctrl_tcei: false
+      evctrl_tcinv: false
+      intenset_control: true
+      intenset_err: false
+      intenset_mc0: true
+      intenset_mc1: false
+      intenset_ovf: true
+      intenset_syncrdy: false
+      per_control: false
+      per_per: 0
+      readreq_addr: 0
+      readreq_control: false
+      readreq_rcont: false
+      readreq_rreq: false
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TC
+          input: Generic clock generator 1
+        configuration:
+          tc_gclk_selection: Generic clock generator 1
+  greenPWM:
+    user_label: greenPWM
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TC4::driver_config_definition::8-bit.Counter.Mode::Lite:TC:Timer
+    functionality: Timer
+    api: Lite:TC:Timer
+    configuration:
+      cc_cc0: 0
+      cc_cc1: 0
+      cc_control: false
+      count_control: false
+      count_count: 0
+      ctrla_control: true
+      ctrla_enable: true
+      ctrla_mode: 1
+      ctrla_prescaler: DIV1
+      ctrla_prescsync: GCLK
+      ctrla_runstdby: false
+      ctrla_wavegen: NFRQ
+      ctrlbset_cmd: NONE
+      ctrlbset_control: false
+      ctrlbset_dir: false
+      ctrlbset_oneshot: false
+      ctrlc_control: false
+      ctrlc_cpten0: false
+      ctrlc_cpten1: false
+      dbgctrl_control: false
+      dbgctrl_dbgrun: false
+      evctrl_control: true
+      evctrl_evact: 'OFF'
+      evctrl_mceo0: true
+      evctrl_mceo1: false
+      evctrl_ovfeo: true
       evctrl_tcei: false
       evctrl_tcinv: false
       intenset_control: false
@@ -170,12 +225,12 @@ drivers:
       domain_group:
         nodes:
         - name: TC
-          input: Generic clock generator 0
+          input: Generic clock generator 1
         configuration:
-          tc_gclk_selection: Generic clock generator 0
-  StepCount:
-    user_label: StepCount
-    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TC4::driver_config_definition::16-bit.Counter.Mode::Lite:TC:Timer
+          tc_gclk_selection: Generic clock generator 1
+  bluePWM:
+    user_label: bluePWM
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TC5::driver_config_definition::8-bit.Counter.Mode::Lite:TC:Timer
     functionality: Timer
     api: Lite:TC:Timer
     configuration:
@@ -186,7 +241,7 @@ drivers:
       count_count: 0
       ctrla_control: true
       ctrla_enable: true
-      ctrla_mode: 0
+      ctrla_mode: 1
       ctrla_prescaler: DIV1
       ctrla_prescsync: GCLK
       ctrla_runstdby: false
@@ -200,19 +255,21 @@ drivers:
       ctrlc_cpten1: false
       dbgctrl_control: false
       dbgctrl_dbgrun: false
-      evctrl_control: false
+      evctrl_control: true
       evctrl_evact: 'OFF'
-      evctrl_mceo0: false
+      evctrl_mceo0: true
       evctrl_mceo1: false
-      evctrl_ovfeo: false
+      evctrl_ovfeo: true
       evctrl_tcei: false
       evctrl_tcinv: false
-      intenset_control: true
+      intenset_control: false
       intenset_err: false
       intenset_mc0: false
       intenset_mc1: false
       intenset_ovf: false
       intenset_syncrdy: false
+      per_control: false
+      per_per: 0
       readreq_addr: 0
       readreq_control: false
       readreq_rcont: false
@@ -559,7 +616,7 @@ drivers:
       osc8m_arch_ondemand: true
       osc8m_arch_overwrite_calibration: false
       osc8m_arch_runstdby: false
-      osc8m_presc: '8'
+      osc8m_presc: '1'
       osculp32k_arch_calib: 0
       osculp32k_arch_overwrite_calibration: false
       osculp32k_arch_wrtlock: false
@@ -584,5 +641,223 @@ drivers:
     variant: null
     clocks:
       domain_group: null
+  beatTimer:
+    user_label: beatTimer
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TCC0::driver_config_definition::Count.Mode::Lite:TCC:Count
+    functionality: Timer
+    api: Lite:TCC:Count
+    configuration:
+      cc_cc0: 0
+      cc_cc1: 0
+      cc_cc2: 0
+      cc_cc3: 0
+      cc_control: false
+      count_control: false
+      count_count: 0
+      ctrla_alock: false
+      ctrla_control: true
+      ctrla_enable: true
+      ctrla_prescaler: DIV1
+      ctrla_prescsync: GCLK
+      ctrla_runstdby: false
+      ctrlbset_cmd: NONE
+      ctrlbset_control: false
+      ctrlbset_dir: false
+      ctrlbset_idxcmd: DISABLE
+      ctrlbset_lupd: false
+      ctrlbset_oneshot: false
+      dbgctrl_control: false
+      dbgctrl_dbgrun: false
+      dbgctrl_fddbd: false
+      drvctrl_control: false
+      drvctrl_filterval0: 0
+      drvctrl_filterval1: 0
+      drvctrl_nre0: false
+      drvctrl_nre1: false
+      drvctrl_nre2: false
+      drvctrl_nre3: false
+      drvctrl_nre4: false
+      drvctrl_nre5: false
+      drvctrl_nre6: false
+      drvctrl_nre7: false
+      drvctrl_nrv0: false
+      drvctrl_nrv1: false
+      drvctrl_nrv2: false
+      drvctrl_nrv3: false
+      drvctrl_nrv4: false
+      drvctrl_nrv5: false
+      drvctrl_nrv6: false
+      drvctrl_nrv7: false
+      evctrl_cnteo: false
+      evctrl_cntsel: START
+      evctrl_control: false
+      evctrl_evact0: 'OFF'
+      evctrl_evact1: 'OFF'
+      evctrl_mcei0: false
+      evctrl_mcei1: false
+      evctrl_mcei2: false
+      evctrl_mcei3: false
+      evctrl_mceo0: true
+      evctrl_mceo1: true
+      evctrl_mceo2: true
+      evctrl_mceo3: false
+      evctrl_ovfeo: true
+      evctrl_tcei0: false
+      evctrl_tcei1: false
+      evctrl_tcinv0: false
+      evctrl_tcinv1: false
+      evctrl_trgeo: false
+      fctrla_blank: NONE
+      fctrla_chsel: CC0
+      fctrla_control: false
+      fctrla_filterval: 0
+      fctrla_halt: DISABLE
+      fctrla_keep: false
+      fctrla_qual: false
+      fctrla_restart: false
+      fctrla_src: DISABLE
+      fctrlb_blank: NONE
+      fctrlb_chsel: CC0
+      fctrlb_control: false
+      fctrlb_filterval: 0
+      fctrlb_halt: DISABLE
+      fctrlb_keep: false
+      fctrlb_qual: false
+      fctrlb_restart: false
+      fctrlb_src: DISABLE
+      intenset_cnt: false
+      intenset_control: true
+      intenset_dfs: false
+      intenset_err: false
+      intenset_fault0: false
+      intenset_fault1: false
+      intenset_faulta: false
+      intenset_faultb: false
+      intenset_mc0: true
+      intenset_mc1: true
+      intenset_mc2: true
+      intenset_mc3: false
+      intenset_ovf: true
+      intenset_trg: false
+      per_control: false
+      per_per: 0
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TCC
+          input: Generic clock generator 1
+        configuration:
+          tcc_gclk_selection: Generic clock generator 1
+  neoPixel:
+    user_label: neoPixel
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TCC1::driver_config_definition::Count.Mode::Lite:TCC:Count
+    functionality: Timer
+    api: Lite:TCC:Count
+    configuration:
+      cc_cc0: 0
+      cc_cc1: 0
+      cc_cc2: 0
+      cc_cc3: 0
+      cc_control: false
+      count_control: false
+      count_count: 0
+      ctrla_alock: false
+      ctrla_control: true
+      ctrla_enable: true
+      ctrla_prescaler: DIV1
+      ctrla_prescsync: GCLK
+      ctrla_runstdby: false
+      ctrlbset_cmd: NONE
+      ctrlbset_control: false
+      ctrlbset_dir: false
+      ctrlbset_idxcmd: DISABLE
+      ctrlbset_lupd: false
+      ctrlbset_oneshot: false
+      dbgctrl_control: false
+      dbgctrl_dbgrun: false
+      dbgctrl_fddbd: false
+      drvctrl_control: false
+      drvctrl_filterval0: 0
+      drvctrl_filterval1: 0
+      drvctrl_nre0: false
+      drvctrl_nre1: false
+      drvctrl_nre2: false
+      drvctrl_nre3: false
+      drvctrl_nre4: false
+      drvctrl_nre5: false
+      drvctrl_nre6: false
+      drvctrl_nre7: false
+      drvctrl_nrv0: false
+      drvctrl_nrv1: false
+      drvctrl_nrv2: false
+      drvctrl_nrv3: false
+      drvctrl_nrv4: false
+      drvctrl_nrv5: false
+      drvctrl_nrv6: false
+      drvctrl_nrv7: false
+      evctrl_cnteo: false
+      evctrl_cntsel: START
+      evctrl_control: false
+      evctrl_evact0: 'OFF'
+      evctrl_evact1: 'OFF'
+      evctrl_mcei0: false
+      evctrl_mcei1: false
+      evctrl_mcei2: false
+      evctrl_mcei3: false
+      evctrl_mceo0: false
+      evctrl_mceo1: false
+      evctrl_mceo2: false
+      evctrl_mceo3: false
+      evctrl_ovfeo: false
+      evctrl_tcei0: false
+      evctrl_tcei1: false
+      evctrl_tcinv0: false
+      evctrl_tcinv1: false
+      evctrl_trgeo: false
+      fctrla_blank: NONE
+      fctrla_chsel: CC0
+      fctrla_control: false
+      fctrla_filterval: 0
+      fctrla_halt: DISABLE
+      fctrla_keep: false
+      fctrla_qual: false
+      fctrla_restart: false
+      fctrla_src: DISABLE
+      fctrlb_blank: NONE
+      fctrlb_chsel: CC0
+      fctrlb_control: false
+      fctrlb_filterval: 0
+      fctrlb_halt: DISABLE
+      fctrlb_keep: false
+      fctrlb_qual: false
+      fctrlb_restart: false
+      fctrlb_src: DISABLE
+      intenset_cnt: false
+      intenset_control: true
+      intenset_dfs: false
+      intenset_err: false
+      intenset_fault0: false
+      intenset_fault1: false
+      intenset_faulta: false
+      intenset_faultb: false
+      intenset_mc0: true
+      intenset_mc1: false
+      intenset_mc2: false
+      intenset_mc3: false
+      intenset_ovf: true
+      intenset_trg: false
+      per_control: true
+      per_per: 255
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TCC
+          input: Generic clock generator 1
+        configuration:
+          tcc_gclk_selection: Generic clock generator 1
 pads: {}
 toolchain_options: []

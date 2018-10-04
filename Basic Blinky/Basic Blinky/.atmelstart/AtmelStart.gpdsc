@@ -75,6 +75,7 @@
         <file category="source" condition="ARMCC, GCC, IAR" name="hal/utils/src/utils_list.c"/>
         <file category="source" condition="GCC" name="hal/utils/src/utils_syscalls.c"/>
         <file category="doc" condition="ARMCC, GCC, IAR" name="hpl/doc_lite/tc.rst"/>
+        <file category="doc" condition="ARMCC, GCC, IAR" name="hpl/doc_lite/tcc.rst"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hri/hri_ac_d21.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hri/hri_adc_d21.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hri/hri_d21.h"/>
@@ -122,6 +123,8 @@
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/sysctrl/hpl_sysctrl.c"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="hpl/tc/tc_lite.c"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="hpl/tc/tc_lite.h"/>
+        <file category="source" condition="ARMCC, GCC, IAR" name="hpl/tcc/tcc_lite.c"/>
+        <file category="header" condition="ARMCC, GCC, IAR" name="hpl/tcc/tcc_lite.h"/>
         <file category="header" condition="ARMCC, GCC, IAR" name="atmel_start.h"/>
         <file category="source" condition="ARMCC, GCC, IAR" name="atmel_start.c"/>
         <file attr="config" category="header" condition="ARMCC, GCC, IAR" name="config/hpl_dmac_config.h"/>
@@ -141,6 +144,7 @@
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/port"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/sysctrl"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hpl/tc"/>
+        <file category="include" condition="ARMCC, GCC, IAR" name="hpl/tcc"/>
         <file category="include" condition="ARMCC, GCC, IAR" name="hri"/>
         <file category="include" condition="ARMCC, GCC, IAR" name=""/>
       </files>

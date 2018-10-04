@@ -2,7 +2,7 @@
 /**
  * \file
  *
- * \brief TC related functionality declaration.
+ * \brief TCC related functionality declaration.
  *
  * Copyright (c) 2017 Microchip Technology Inc. and its subsidiaries.
  *
@@ -32,16 +32,16 @@
  *
  */
 
-#ifndef _TC_H_INCLUDED
-#define _TC_H_INCLUDED
+#ifndef _TCC_H_INCLUDED
+#define _TCC_H_INCLUDED
 
 #include <compiler.h>
 #include <utils_assert.h>
 
 /**
- * \addtogroup tc driver
+ * \addtogroup tcc driver
  *
- * \section tc Revision History
+ * \section tcc Revision History
  * - v0.0.0.1 Initial Commit
  *
  *@{
@@ -52,25 +52,19 @@ extern "C" {
 #endif
 
 /**
- * \brief Initialize tc interface
+ * \brief Initialize tcc interface
  * \return Initialization status.
  */
-int8_t redPWM_init();
+int8_t beatTimer_init();
 
 /**
- * \brief Initialize tc interface
+ * \brief Initialize tcc interface
  * \return Initialization status.
  */
-int8_t greenPWM_init();
-
-/**
- * \brief Initialize tc interface
- * \return Initialization status.
- */
-int8_t bluePWM_init();
+int8_t neoPixel_init();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _TC_H_INCLUDED */
+#endif /* _TCC_H_INCLUDED */

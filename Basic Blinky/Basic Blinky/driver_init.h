@@ -23,14 +23,30 @@ extern "C" {
 
 #include <tc_lite.h>
 #include <tc_lite.h>
+#include <tc_lite.h>
 
-void IntenClock_CLOCK_init(void);
+#include <tcc_lite.h>
+#include <tcc_lite.h>
 
-int8_t IntenClock_init(void);
+void redPWM_CLOCK_init(void);
 
-void StepCount_CLOCK_init(void);
+int8_t redPWM_init(void);
 
-int8_t StepCount_init(void);
+void greenPWM_CLOCK_init(void);
+
+int8_t greenPWM_init(void);
+
+void bluePWM_CLOCK_init(void);
+
+int8_t bluePWM_init(void);
+
+void beatTimer_CLOCK_init(void);
+
+int8_t beatTimer_init(void);
+
+void neoPixel_CLOCK_init(void);
+
+int8_t neoPixel_init(void);
 
 /**
  * \brief Perform system initialization, initialize pins and clocks for
