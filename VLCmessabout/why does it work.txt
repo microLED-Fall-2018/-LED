@@ -1,0 +1,5 @@
+Simply taking the diode out of reverse bias and turning off the pull up resistor isn't going to be fast enough to discharge the diode in time for your next read.
+To be ready for the next read set the diode to a forward bias (anode to cathode) to effectively flush w/e charge remained.
+With an ADC this is enough to determine if a light is on or not.
+With the countdown method I'd image it would work to despite not seeing the complete discharge.
+Implementation would have to be a bit different in that a timeout would have to be forced and if the current still isn't strong enough at that point switch over to ADC.
