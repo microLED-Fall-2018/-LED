@@ -13,12 +13,15 @@ namespace SequenceApp
 {
     public partial class Form1 : Form, iForm1
     {
+        Bitmap FADE_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\sine_wave.png");                                          
+        Bitmap FLASH_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\square_wave.png");
+
         public Form1()
         {
             InitializeComponent();
 
             // initialize rows/columns
-
+            seqDataGridView.DefaultCellStyle.SelectionForeColor = Color.Gray;
             seqDataGridView.RowCount = 4;
             seqDataGridView.AllowDrop = true;
             var columns = new DataGridViewCustomColumn[50];
@@ -27,7 +30,7 @@ namespace SequenceApp
                 columns[i]= new DataGridViewCustomColumn();
                 columns[i].Width = seqDataGridView.Rows[0].Height + 2;
             }
-
+            
             //basePictureBox.Image = new Bitmap(@"D:\Desktop\Active HW\Senior Project\square_wave.png");
 
             seqDataGridView.Columns.AddRange(columns);
@@ -37,10 +40,10 @@ namespace SequenceApp
             {
                 for (int c = 0; c < seqDataGridView.ColumnCount; c++)
                 {
-                    Bitmap image = new Bitmap(@"D:\Desktop\Active HW\Senior Project\square_wave.png");
+                    Bitmap image = FLASH_IMAGE;
                     image.SetResolution(10, 10);
                     seqDataGridView.Rows[r].Cells[c].Value = image;
-                    seqDataGridView.Rows[r].Cells[c].Style.BackColor = Color.White;
+                    seqDataGridView.Rows[r].Cells[c].Style.BackColor = Color.Black;
                 }
             }
             // initial formating
@@ -55,9 +58,59 @@ namespace SequenceApp
             seqDataGridView.AllowUserToResizeRows = false;
         }
 
-        public event Action<Color, int> AddBeatClicked;
-        public event Action<Color, int> AddColorClicked;
-        public event Action<int> RemoveBeatClicked;
+        // helper methods
+
+        private void recalculateColor(int row, int column)
+        {
+            if (row == 3)
+            {
+                seqDataGridView.Rows[0].Cells[column].Style.BackColor = Color.Black;
+                seqDataGridView.Rows[1].Cells[column].Style.BackColor = Color.Black;
+                seqDataGridView.Rows[2].Cells[column].Style.BackColor = Color.Black;
+            }
+            else
+            {
+                int R, G, B;
+                R = G = B = 0;
+                R = seqDataGridView.Rows[0].Cells[column].Style.BackColor == Color.White ? 0 : seqDataGridView.Rows[0].Cells[column].Style.BackColor.R;
+                G = seqDataGridView.Rows[1].Cells[column].Style.BackColor == Color.White ? 0 : seqDataGridView.Rows[1].Cells[column].Style.BackColor.G;
+                B = seqDataGridView.Rows[2].Cells[column].Style.BackColor == Color.White ? 0 : seqDataGridView.Rows[2].Cells[column].Style.BackColor.B;
+                seqDataGridView.Rows[3].Cells[column].Style.BackColor = Color.FromArgb(R, G, B);
+            }
+        }
+
+        private void recalculateMode(CellModeEvaluation evaluation)
+        {
+            foreach (int col in evaluation.normalTouchedRows)
+            {
+                List<string> modes = new List<string> {((DataGridViewCustomCell)seqDataGridView.Rows[0].Cells[col]).mode,
+                                                      ((DataGridViewCustomCell)seqDataGridView.Rows[1].Cells[col]).mode,
+                                                      ((DataGridViewCustomCell)seqDataGridView.Rows[2].Cells[col]).mode };
+                // only 1 mode represented in all 3 rows for that column
+                if (modes.Distinct().ToList().Count == 1)
+                {
+                    DataGridViewCustomCell cell = ((DataGridViewCustomCell)seqDataGridView.Rows[3].Cells[col]);
+                    cell.mode = modes[0];
+                    cell.Value = modes[0] == "Fade" ? FADE_IMAGE :
+                                                      FLASH_IMAGE;
+                }
+            }
+            foreach (int col in evaluation.colorTouchedRows)
+            {
+                DataGridViewCustomCell colorCustomCell = (DataGridViewCustomCell)seqDataGridView.Rows[3].Cells[col];
+                for(int i = 0; i < 3; i ++)
+                {
+                    DataGridViewCustomCell cell = ((DataGridViewCustomCell)seqDataGridView.Rows[i].Cells[col]);
+                    cell.mode = colorCustomCell.mode;
+                    cell.Value = cell.mode == "Fade" ? FADE_IMAGE :
+                                                       FLASH_IMAGE;
+                }
+            }
+        }
+
+        // UI Handlers
+
+        public event Action<CellData[,]> ExportClicked;
 
         private void removeButton_Click(object sender, EventArgs e)
         {
@@ -65,28 +118,9 @@ namespace SequenceApp
             {
                 foreach(DataGridViewCell cell in seqDataGridView.SelectedCells)
                 {
-                    cell.Style.BackColor = Color.White;
-                    RemoveBeatClicked(cell.ColumnIndex);
+                    cell.Style.BackColor = Color.Black;
                     recalculateColor(cell.RowIndex, cell.ColumnIndex);
                 }
-            }
-        }
-
-        private void recalculateColor(int row, int column)
-        {
-            if(row == 3)
-            {
-                seqDataGridView.Rows[0].Cells[column].Style.BackColor = Color.White;
-                seqDataGridView.Rows[1].Cells[column].Style.BackColor = Color.White;
-                seqDataGridView.Rows[2].Cells[column].Style.BackColor = Color.White;
-            } else
-            {
-                int R, G, B;
-                R = G = B = 0;
-                R = seqDataGridView.Rows[0].Cells[column].Style.BackColor == Color.White ? 0 : seqDataGridView.Rows[0].Cells[column].Style.BackColor.R;
-                G = seqDataGridView.Rows[1].Cells[column].Style.BackColor == Color.White ? 0 : seqDataGridView.Rows[1].Cells[column].Style.BackColor.G;
-                B = seqDataGridView.Rows[2].Cells[column].Style.BackColor == Color.White ? 0 : seqDataGridView.Rows[2].Cells[column].Style.BackColor.B;
-                seqDataGridView.Rows[3].Cells[column].Style.BackColor = R == 0 && G == 0 && B == 0 ? Color.White : Color.FromArgb(R,G,B);
             }
         }
 
@@ -204,18 +238,50 @@ namespace SequenceApp
             colorPictureBox.BackColor = colorDialog1.Color;
         }
 
+        // advanced form. Auto generate doesn't change when I fix the name....
         private void button1_Click(object sender, EventArgs e)
         {
-            var popup = new AdvancedSettingsForm();
+            int rate;
+            string mode;
+            bool setAll = false;
+            if (seqDataGridView.SelectedCells.Count == 1)
+            {
+                DataGridViewCustomCell customCell = (DataGridViewCustomCell)seqDataGridView.SelectedCells[0];
+                rate = customCell.rate;
+                mode = customCell.mode;
+                setAll = customCell.RowIndex == 3 ? true : false;
+            } else if(seqDataGridView.SelectedCells.Count > 1)
+            {
+                DataGridViewCustomCell customCell = (DataGridViewCustomCell)seqDataGridView.SelectedCells[seqDataGridView.SelectedCells.Count-1];
+                rate = customCell.rate;
+                mode = customCell.mode;
+            } else
+            {
+                return; //exit if nothing is selected
+            }
+
+
+            var popup = new AdvancedSettingsForm(rate, mode);
             popup.ShowDialog();
             if(popup.DialogResult == DialogResult.OK && seqDataGridView.SelectedCells.Count > 0)
             {
-                for(int i = 0; i < seqDataGridView.SelectedCells.Count; i++)
+                CellModeEvaluation evaluation = new CellModeEvaluation();
+                for (int i = 0; i < seqDataGridView.SelectedCells.Count; i++)
                 {
-                    seqDataGridView.SelectedCells[i].Value = popup.mode == "Sine" ? new Bitmap(@"D:\Desktop\Active HW\Senior Project\sine_wave2.png") :
-                                                                                new Bitmap(@"D:\Desktop\Active HW\Senior Project\square_wave.png");
+                    DataGridViewCustomCell cell = (DataGridViewCustomCell)seqDataGridView.SelectedCells[i];
+                    cell.Value = popup.mode == "Fade" ? FADE_IMAGE :
+                                                        FLASH_IMAGE;
+                    cell.rate = popup.rate;
+                    cell.mode = popup.mode;
 
+                    if (cell.RowIndex == 3)
+                        evaluation.colorTouchedRows.Add(cell.ColumnIndex);
+                    else
+                        evaluation.normalTouchedRows.Add(cell.ColumnIndex);
                 }
+                evaluation.colorTouchedRows = evaluation.colorTouchedRows.Distinct().ToList();
+                evaluation.normalTouchedRows = evaluation.normalTouchedRows.Distinct().ToList();
+                recalculateMode(evaluation);
             }
         }
 
@@ -223,6 +289,28 @@ namespace SequenceApp
         private void basePictureBox_MouseDown(object sender, MouseEventArgs e)
         {
             basePictureBox.DoDragDrop("B", DragDropEffects.Move | DragDropEffects.Move);
+        }
+
+
+        // export handler
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            CellData[,] cells = new CellData[3, 255];
+            
+            for (int row_i = 0; row_i < 3; row_i++)
+            {
+
+                DataGridViewRow row = seqDataGridView.Rows[row_i];
+                for(int cell_i = 0; cell_i < row.Cells.Count; cell_i++)
+                {
+                    DataGridViewCustomCell customCell = (DataGridViewCustomCell) row.Cells[cell_i];
+                    int rate = customCell.rate;
+                    string mode = customCell.mode;
+                    int[] intensities = new int[] { customCell.Style.BackColor.R, customCell.Style.BackColor.G, customCell.Style.BackColor.B };
+                    cells[row_i, cell_i] = new CellData { rate = rate, mode = mode, intensity = intensities[row_i], color = row_i};
+                }
+            }
+            ExportClicked(cells);
         }
     }
 }

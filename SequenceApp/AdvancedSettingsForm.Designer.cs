@@ -63,8 +63,8 @@
             // 
             this.modeComboBox.FormattingEnabled = true;
             this.modeComboBox.Items.AddRange(new object[] {
-            "Square",
-            "Sine"});
+            "Flash",
+            "Fade"});
             this.modeComboBox.Location = new System.Drawing.Point(99, 62);
             this.modeComboBox.Name = "modeComboBox";
             this.modeComboBox.Size = new System.Drawing.Size(121, 21);

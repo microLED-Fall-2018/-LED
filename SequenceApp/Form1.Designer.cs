@@ -36,9 +36,16 @@
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.setAdvancedButton = new System.Windows.Forms.Button();
             this.basePictureBox = new System.Windows.Forms.PictureBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.seqDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.basePictureBox)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // seqDataGridView
@@ -56,7 +63,7 @@
             this.seqDataGridView.Location = new System.Drawing.Point(1, 2);
             this.seqDataGridView.Name = "seqDataGridView";
             this.seqDataGridView.ReadOnly = true;
-            this.seqDataGridView.Size = new System.Drawing.Size(797, 114);
+            this.seqDataGridView.Size = new System.Drawing.Size(437, 114);
             this.seqDataGridView.TabIndex = 0;
             this.seqDataGridView.SelectionChanged += new System.EventHandler(this.seqDataGridView_SelectionChanged);
             this.seqDataGridView.DragDrop += new System.Windows.Forms.DragEventHandler(this.seqDataGridView_DragDrop);
@@ -64,9 +71,9 @@
             // 
             // removeButton
             // 
-            this.removeButton.Location = new System.Drawing.Point(260, 122);
+            this.removeButton.Location = new System.Drawing.Point(6, 17);
             this.removeButton.Name = "removeButton";
-            this.removeButton.Size = new System.Drawing.Size(75, 70);
+            this.removeButton.Size = new System.Drawing.Size(109, 36);
             this.removeButton.TabIndex = 1;
             this.removeButton.Text = "Remove";
             this.removeButton.UseVisualStyleBackColor = true;
@@ -76,9 +83,9 @@
             // 
             this.colorPictureBox.BackColor = System.Drawing.Color.White;
             this.colorPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.colorPictureBox.Location = new System.Drawing.Point(12, 123);
+            this.colorPictureBox.Location = new System.Drawing.Point(6, 16);
             this.colorPictureBox.Name = "colorPictureBox";
-            this.colorPictureBox.Size = new System.Drawing.Size(100, 97);
+            this.colorPictureBox.Size = new System.Drawing.Size(82, 75);
             this.colorPictureBox.TabIndex = 2;
             this.colorPictureBox.TabStop = false;
             this.colorPictureBox.DoubleClick += new System.EventHandler(this.colorPictureBox_DoubleClick);
@@ -86,9 +93,9 @@
             // 
             // setColorButton
             // 
-            this.setColorButton.Location = new System.Drawing.Point(12, 226);
+            this.setColorButton.Location = new System.Drawing.Point(94, 16);
             this.setColorButton.Name = "setColorButton";
-            this.setColorButton.Size = new System.Drawing.Size(49, 42);
+            this.setColorButton.Size = new System.Drawing.Size(83, 36);
             this.setColorButton.TabIndex = 3;
             this.setColorButton.Text = "Set Color";
             this.setColorButton.UseVisualStyleBackColor = true;
@@ -96,11 +103,11 @@
             // 
             // setAdvancedButton
             // 
-            this.setAdvancedButton.Location = new System.Drawing.Point(63, 226);
+            this.setAdvancedButton.Location = new System.Drawing.Point(94, 58);
             this.setAdvancedButton.Name = "setAdvancedButton";
-            this.setAdvancedButton.Size = new System.Drawing.Size(49, 42);
+            this.setAdvancedButton.Size = new System.Drawing.Size(83, 33);
             this.setAdvancedButton.TabIndex = 4;
-            this.setAdvancedButton.Text = "Set Adv";
+            this.setAdvancedButton.Text = "Set Mode";
             this.setAdvancedButton.UseVisualStyleBackColor = true;
             this.setAdvancedButton.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -108,29 +115,73 @@
             // 
             this.basePictureBox.BackColor = System.Drawing.Color.White;
             this.basePictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.basePictureBox.Location = new System.Drawing.Point(130, 123);
+            this.basePictureBox.Location = new System.Drawing.Point(6, 16);
             this.basePictureBox.Name = "basePictureBox";
-            this.basePictureBox.Size = new System.Drawing.Size(40, 38);
+            this.basePictureBox.Size = new System.Drawing.Size(79, 78);
             this.basePictureBox.TabIndex = 5;
             this.basePictureBox.TabStop = false;
             this.basePictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.basePictureBox_MouseDown);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.basePictureBox);
+            this.groupBox1.Location = new System.Drawing.Point(213, 123);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(91, 100);
+            this.groupBox1.TabIndex = 6;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Base Color";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.removeButton);
+            this.groupBox2.Location = new System.Drawing.Point(310, 122);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(121, 101);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Management";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(6, 59);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(109, 33);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "Export";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.colorPictureBox);
+            this.groupBox3.Controls.Add(this.setColorButton);
+            this.groupBox3.Controls.Add(this.setAdvancedButton);
+            this.groupBox3.Location = new System.Drawing.Point(12, 123);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(183, 100);
+            this.groupBox3.TabIndex = 8;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Beat Controls";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 341);
-            this.Controls.Add(this.basePictureBox);
-            this.Controls.Add(this.setAdvancedButton);
-            this.Controls.Add(this.setColorButton);
-            this.Controls.Add(this.colorPictureBox);
-            this.Controls.Add(this.removeButton);
+            this.ClientSize = new System.Drawing.Size(440, 229);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.seqDataGridView);
             this.Name = "Form1";
             this.Text = "Color Bar";
             ((System.ComponentModel.ISupportInitialize)(this.seqDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.basePictureBox)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -144,6 +195,10 @@
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Button setAdvancedButton;
         private System.Windows.Forms.PictureBox basePictureBox;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }
 

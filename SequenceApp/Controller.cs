@@ -14,23 +14,11 @@ namespace SequenceApp
         public Controller(Form1 form)
         {
             window = form;
-
-            window.AddColorClicked += AddColorHandler;
-            window.AddBeatClicked += AddBeatHandler;
-            window.RemoveBeatClicked += RemoveBeatHandler;
+            
+            window.ExportClicked += ExportClickedHandler;
         }
 
-        public void AddColorHandler(Color c, int index)
-        {
-
-        }
-
-        public void AddBeatHandler(Color c, int index)
-        {
-
-        }
-
-        public void RemoveBeatHandler(int index)
+        public void ExportClickedHandler(CellData[,] colors)
         {
 
         }

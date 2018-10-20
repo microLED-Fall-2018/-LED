@@ -12,7 +12,7 @@ namespace SequenceApp
 {
     public partial class AdvancedSettingsForm : Form
     {
-        public int rate = 0;
+        public int rate = 5;
         public string mode = "square";
         public bool wasComplete = false;
 
@@ -20,6 +20,16 @@ namespace SequenceApp
         {
             InitializeComponent();
             modeComboBox.Text = "square";
+        }
+
+        public AdvancedSettingsForm(int rate, string mode)
+        {
+            InitializeComponent();
+            modeComboBox.Text = mode;
+            numericUpDown1.Value = rate;
+
+            this.rate = rate;
+            this.mode = mode;
         }
 
         private void okButton_Click(object sender, EventArgs e)

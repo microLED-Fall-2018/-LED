@@ -14,9 +14,9 @@ namespace SequenceApp.View
     {
         private bool is_odd = false;
 
-        public int rate { get; set; } = 0;
-        public int mode { get; set; } = 0;
-        public int channel { get; set; } = -1;
+        public int rate { get; set; } = 5;
+        public string mode { get; set; } = "flash";
+        public char channel { get; set; } = 'U';
 
         public DataGridViewCustomCell()
         {
