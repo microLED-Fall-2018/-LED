@@ -4,6 +4,7 @@
  * neoPixel TCC1 - Another psuedo PWM for neopixel control.
  */
 #include <atmel_start.h>
+#include "..\sequences.h"
 
 #define PORTA PORT->Group[0]
 #define PORTB PORT->Group[1]
@@ -19,18 +20,18 @@
 #define RAMPUP 2
 #define RAMPDN 3
 
-#define GET_INST_COLOR(color) (color.inst >> 6)
-#define GET_INST_TYPE(color) ((color.inst >> 4) & 0x3)
+//#define GET_INST_COLOR(color) (color.inst >> 6)
+//#define GET_INST_TYPE(color) ((color.inst >> 4) & 0x3)
 
 //#define STEP_TIMER TC4->COUNT16
-#define INTEN_TIMER TC3->COUNT8
+//#define INTEN_TIMER TC3->COUNT8
 
-typedef struct {
+/*typedef struct {
 	uint8_t inst;
 	uint8_t rate;
 	uint8_t dur;
 	uint8_t bright;
-	} instruction;
+	} instruction;*/
 	
 typedef struct {
 	uint8_t first;
@@ -38,10 +39,9 @@ typedef struct {
 	uint8_t curr;
 	} instTracker;
 	
-instruction shortDemo[200] =   {{0x00, 4, 1, 255},
-								{0x21, 4, 1, 255}, 
-								{0x41, 8, 1, 200},
-								{0x81, 16, 1, 128}};
+/*instruction shortDemo[200] =   {{0x31, 2, 1, 255}, 
+								{0x41, 8, 1, 0},
+								{0x81, 16, 1, 0}};*/
 
 
 								/*{{0x00, 4, 4, 200},
@@ -92,7 +92,6 @@ uint16_t diffs[3]; // increase over current count for next action
 uint16_t countMax;
 uint8_t increment[3];
 uint8_t direction;
-uint8_t firstTime = 0;
 
 uint8_t beatsRemaining[3] = {0, 0, 0};
 uint16_t actionsRemaining[3] = {0, 0,0};
@@ -106,7 +105,7 @@ void flash(uint8_t);
 void fade(uint8_t);
 void rampUp(uint8_t);
 void rampDown(uint8_t);
-void (*action)(uint8_t);//, uint16_t);
+void (*action[3])(uint8_t);
 void testByColor(uint8_t, uint8_t);
 
 int main(void)
@@ -118,6 +117,22 @@ int main(void)
 	NVIC_DisableIRQ(TC4_IRQn);
 	NVIC_DisableIRQ(TC5_IRQn);
 	
+	REG_GCLK_CLKCTRL = GCLK_CLKCTRL_ID_EIC | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_CLKEN;
+	REG_PM_APBAMASK |= PM_APBAMASK_EIC;
+	EIC->INTENSET.reg	|= EIC_INTENSET_EXTINT11;
+	EIC->CONFIG[1].reg	|= EIC_CONFIG_FILTEN3 | EIC_CONFIG_SENSE3_BOTH;
+	EIC->CTRL.reg		|= EIC_CTRL_ENABLE;
+	NVIC_EnableIRQ(EIC_IRQn);
+	NVIC_SetPriority(EIC_IRQn, 2);
+	
+	PORTA.DIR.reg |= 1 << 12;
+	PORTA.OUT.reg |= (1 << 12);
+	
+	PORTA.DIR.reg &= ~(1 << 11);
+	PORTA.PINCFG[11].reg |= PORT_PINCFG_INEN | PORT_PINCFG_PULLEN | PORT_PINCFG_PMUXEN;
+	PORTA.OUT.reg |= 1 << 11; 
+	PORTA.PMUX[5].reg |= PINMUX_PA11A_EIC_EXTINT11; 
+	
 	// For testing, instantiate sequence 0 with short Demo
 	int i;
 	for (i = 0; i < 200; i++)
@@ -127,7 +142,7 @@ int main(void)
 	
 	TCC0->PER.reg = 255;
 	TCC0->WAVE.reg |= TCC_WAVE_WAVEGEN_NPWM | 0x7 << 16;
-
+	
 	populateTracker(sequences[sequenceCurr]);
 	tracker[RED].curr = tracker[RED].first;
 	tracker[GREEN].curr = tracker[GREEN].first;
@@ -145,9 +160,9 @@ int main(void)
 	NVIC_EnableIRQ(TC4_IRQn);
 	NVIC_EnableIRQ(TC5_IRQn);
 
-	NVIC_SetPriority(TC3_IRQn, 2);
-	NVIC_SetPriority(TC4_IRQn, 2);
-	NVIC_SetPriority(TC5_IRQn, 2);
+	NVIC_SetPriority(TC3_IRQn, 3);
+	NVIC_SetPriority(TC4_IRQn, 3);
+	NVIC_SetPriority(TC5_IRQn, 3);
 
 	while(1)
 	{	
@@ -202,75 +217,55 @@ void processInstruction(instruction inst)
 	uint8_t color	= (inst.inst >> 6) & 0x3;
 	uint8_t whatKind	= (inst.inst >> 4) & 0x3;
 	
-	switch(whatKind)
+	if (whatKind == FLASH)
 	{
-		case FLASH:
-			maxIntensity[color] = inst.bright;
-			currIntensity[color] = maxIntensity[color];
-			actionsRemaining[color] = (inst.dur * inst.rate) << 1;
-			diffs[color] = (stepsPerBeat / inst.rate) >> 1;
-			action = &flash;
-			break;
-		case FADE:
-			increment[color] = inst.bright >> 4;
-			maxIntensity[color] = increment[color] << 4;
-			currIntensity[color] = 0;
-			actionsRemaining[color] = (inst.dur * inst.rate) << 4; // x16x2 = x32 = << 5
-			diffs[color] = (stepsPerBeat / inst.rate) >> 4;
-			direction = 1;
-			action = &fade;
-			break;
-		case RAMPUP:
-			increment[color] = inst.bright >> 4;
-			maxIntensity[color] = increment[color] << 4;
-			currIntensity[color] = 0;
-			actionsRemaining[color] = (inst.dur * inst.rate) << 4; // x16x2 = x32 = << 5
-			diffs[color] = (stepsPerBeat / inst.rate) >> 4;
-			action = &rampUp;
-			break;
-		case RAMPDN:
-			increment[color] = inst.bright >> 4;
-			maxIntensity[color] = increment[color] << 4;
-			currIntensity[color] = maxIntensity[color];
-			actionsRemaining[color] = (inst.dur * inst.rate) << 4; // x16x2 = x32 = << 5
-			diffs[color] = (stepsPerBeat / inst.rate) >> 4;
-			action = &rampDown;
-			break;
-		default:
-			while(1) // Error state
-			{
-				PORTA.OUTTGL.reg = 1 << 2 | 1 << 4 | 1 << 5;
-				delay_ms(500);
-			}
-			break;
+		maxIntensity[color] = inst.bright;
+		currIntensity[color] = maxIntensity[color];
+		actionsRemaining[color] = (inst.dur * inst.rate) << 1;
+		diffs[color] = (stepsPerBeat / inst.rate) >> 1;
+		action[color] = &flash;
 	}
-	switch(color)
+	else if (whatKind == FADE)
 	{
-	case RED:
+		increment[color] = inst.bright >> 4;
+		maxIntensity[color] = increment[color] << 4;
+		currIntensity[color] = 0;
+		actionsRemaining[color] = (inst.dur * inst.rate) << 5; // x16x2 = x32 = << 5
+		diffs[color] = (stepsPerBeat / inst.rate) >> 5;
+		direction = 1;
+		action[color] = &fade;
+	}
+	else if(whatKind == RAMPUP)
+	{
+		increment[color] = inst.bright >> 4;
+		maxIntensity[color] = increment[color] << 4;
+		currIntensity[color] = 0;
+		actionsRemaining[color] = (inst.dur * inst.rate) << 4; // x16x2 = x32 = << 5
+		diffs[color] = (stepsPerBeat / inst.rate) >> 4;
+		action[color] = &rampUp;
+	}
+	else if (whatKind == RAMPDN)
+	{
+		increment[color] = inst.bright >> 4;
+		maxIntensity[color] = increment[color] << 4;
+		currIntensity[color] = maxIntensity[color];
+		actionsRemaining[color] = (inst.dur * inst.rate) << 4; // x16x2 = x32 = << 5
+		diffs[color] = (stepsPerBeat / inst.rate) >> 4;
+		action[color] = &rampDown;
+	}
+	
+	if (color == RED)
 		TC3->COUNT16.CC[0].reg = diffs[color];
-		break;
-	case GREEN:
+	else if (color == GREEN)
 		TC4->COUNT16.CC[0].reg = diffs[color];
-		break;
-	case BLUE:
+	else if (color == BLUE)
 		TC5->COUNT16.CC[0].reg = diffs[color];
-		break;
-	default:
-		while(1) // Error state
-		{
-			PORTA.OUTTGL.reg = 1 << 2 | 1 << 4 | 1 << 5;
-			delay_ms(500);
-		}
-		break;
-	}
 }
 
 void flash(uint8_t color)
 {
 	currIntensity[color] = (currIntensity[color] == maxIntensity[color]) ? 0 : maxIntensity[color];		
-	
-	TCC0->CC[color].reg = currIntensity[color];
-	
+	TCC0->CC[color].reg = currIntensity[color];	
 }
 
 void fade(uint8_t color)
@@ -306,7 +301,7 @@ void rampDown(uint8_t color)
 		currIntensity[color] = maxIntensity[color];
 	else
 		currIntensity[color] -= increment[color];
-		
+	
 	TCC0->CC[color].reg = currIntensity[color];
 }
 
@@ -322,7 +317,7 @@ void TC3_Handler()
 {	
 	if (TC3->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF)
 	{	
-		action(RED);
+		action[RED](RED);
 		if (--actionsRemaining[RED] <= 0)
 		{			
 			nextInstruction(RED);
@@ -337,7 +332,7 @@ void TC4_Handler()
 {
 	if (TC4->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF)
 	{
-		action(GREEN);
+		action[GREEN](GREEN);
 		if (--actionsRemaining[GREEN] <= 0)
 		{
 			nextInstruction(GREEN);
@@ -351,7 +346,7 @@ void TC5_Handler()
 {
 	if (TC5->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF)
 	{
-		action(BLUE);
+		action[BLUE](BLUE);
 		if (--actionsRemaining[BLUE] <= 0)
 		{
 			nextInstruction(BLUE);
@@ -359,6 +354,29 @@ void TC5_Handler()
 		}
 	}
 	TC5->COUNT16.INTFLAG.reg |= TC_INTFLAG_OVF;
+}
+
+void EIC_Handler()
+{
+	if (EIC->INTFLAG.reg & EIC_INTFLAG_EXTINT11)
+	{
+		if (TCC2->STATUS.reg & TCC_STATUS_STOP)
+		{
+			delay_ms(250);
+			TCC2->CTRLBSET.reg = TCC_CTRLBSET_CMD_RETRIGGER;
+		}
+		else
+		{
+			delay_ms(1000);
+
+			if (TCC2->COUNT.reg == 0)
+				PORTA.OUT.reg &= ~(1 << 12);
+				
+			TCC2->CTRLBSET.reg = TCC_CTRLBSET_CMD_STOP;
+				
+		}
+		EIC->INTFLAG.reg |= EIC_INTFLAG_EXTINT11;
+	}	
 }
 
 void testByColor(uint8_t color, uint8_t val)
