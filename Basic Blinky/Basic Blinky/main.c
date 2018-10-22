@@ -318,45 +318,6 @@ void nextInstruction(uint8_t color)
 		tracker[color].curr = tracker[color].curr + 1;
 }
 
-/*
-	// End of period, turn everything back on.
-	if (TCC0->INTFLAG.reg & TCC_INTFLAG_OVF)
-	{
-		if (currIntensity[RED] != 0)
-			PORTA.OUT.reg &= ~(1 << 2);
-		if (currIntensity[GREEN] != 0)
-			PORTA.OUT.reg &= ~(1 << 4);
-		if (currIntensity[BLUE] != 0)
-			PORTA.OUT.reg &= ~(1 << 5);
-			
-		TCC0->CC[RED].reg = currIntensity[RED];
-		TCC0->CC[GREEN].reg = currIntensity[GREEN];
-		TCC0->CC[BLUE].reg = currIntensity[BLUE];
-			
-		TCC0->INTFLAG.reg |= TCC_INTFLAG_OVF | TCC_INTFLAG_MC0 | TCC_INTFLAG_MC1 | TCC_INTFLAG_MC2;
-		return;
-	}
-	else
-	{	
-		// End of pulse width, turn elements off.
-		if ((TCC0->INTFLAG.reg & TCC_INTFLAG_MC0) | (TCC0->INTFLAG.reg & TCC_INTFLAG_MC1) | (TCC0->INTFLAG.reg & TCC_INTFLAG_MC2))
-		{
-			uint8_t count = TCC0->COUNT.reg >> 4;
-			
-			if (count >= currIntensity[RED])
-				PORTA.OUT.reg |= 1 << 2;
-			
-			if (count >= currIntensity[GREEN])
-				PORTA.OUT.reg |= 1 << 4;
-				
-			if (count >= currIntensity[BLUE])
-				PORTA.OUT.reg |= 1 << 5;
-			
-			TCC0->INTFLAG.reg |= TCC_INTFLAG_MC0 | TCC_INTFLAG_MC1 | TCC_INTFLAG_MC2;
-		}
-	}
-}*/
-
 void TC3_Handler()
 {	
 	if (TC3->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF)
