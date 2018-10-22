@@ -97,9 +97,9 @@
           <AcmeProjectActionInfo Action="File" Source="hri/hri_usb_d21.h" IsConfig="false" Hash="agq0gHuv5nfZ5aG2fOCQwA" />
           <AcmeProjectActionInfo Action="File" Source="hri/hri_wdt_d21.h" IsConfig="false" Hash="7CgqpyY1y0K0MWo9DkOrlQ" />
           <AcmeProjectActionInfo Action="File" Source="main.c" IsConfig="false" Hash="k0AH7j+BrmdFhBPzCCMptA" />
-          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="A6x9oZ9QDOS0weZOgvhr5g" />
-          <AcmeProjectActionInfo Action="File" Source="driver_init.h" IsConfig="false" Hash="e4CwqxfH5eN9SWJaGtoaAg" />
-          <AcmeProjectActionInfo Action="File" Source="atmel_start_pins.h" IsConfig="false" Hash="JS7lcW/59sN+Bb0xf5LjgQ" />
+          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="B3vW2PpIL0oRnMqvgJ37Yw" />
+          <AcmeProjectActionInfo Action="File" Source="driver_init.h" IsConfig="false" Hash="EZ601dsHHzGL0nWg0cruMA" />
+          <AcmeProjectActionInfo Action="File" Source="atmel_start_pins.h" IsConfig="false" Hash="wupuzvW+XYSBx4W5A1FQ0w" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.h" IsConfig="false" Hash="FVtUMrZTRgYfz8skp36UUw" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.c" IsConfig="false" Hash="ktkB/D+YINGKHPIQ5kckOQ" />
           <AcmeProjectActionInfo Action="File" Source="hal/include/hpl_missing_features.h" IsConfig="false" Hash="XsAvpgfutzkw0Y5SydYFaw" />
@@ -108,24 +108,24 @@
           <AcmeProjectActionInfo Action="File" Source="hpl/core/hpl_core_m0plus_base.c" IsConfig="false" Hash="Qi2FtuWLBmnjJYwz+gmCBQ" />
           <AcmeProjectActionInfo Action="File" Source="hpl/core/hpl_core_port.h" IsConfig="false" Hash="RXrDMMracCeflR1F9jWiGg" />
           <AcmeProjectActionInfo Action="File" Source="hpl/core/hpl_init.c" IsConfig="false" Hash="RDb3Bv/wnVodx3hNbuWd1Q" />
-          <AcmeProjectActionInfo Action="File" Source="hpl/dmac/hpl_dmac.c" IsConfig="false" Hash="jwDztf1HtRnFygFuprQw8Q" />
+          <AcmeProjectActionInfo Action="File" Source="hpl/dmac/hpl_dmac.c" IsConfig="false" Hash="ms32e2Tn5YGRb/taMPIV1g" />
           <AcmeProjectActionInfo Action="File" Source="hpl/gclk/hpl_gclk.c" IsConfig="false" Hash="qYkXv5QMT8Y9Wk4qthLzWA" />
           <AcmeProjectActionInfo Action="File" Source="hpl/gclk/hpl_gclk_base.h" IsConfig="false" Hash="XtS8huv0QZPSF9cvAeZ8RA" />
           <AcmeProjectActionInfo Action="File" Source="hpl/pm/hpl_pm.c" IsConfig="false" Hash="R3wV7M4HtYcRCNz6RQOhCw" />
           <AcmeProjectActionInfo Action="File" Source="hpl/pm/hpl_pm_base.h" IsConfig="false" Hash="T2mwlja7rLI0u564Rgn0Dw" />
           <AcmeProjectActionInfo Action="File" Source="hpl/port/hpl_gpio_base.h" IsConfig="false" Hash="XsyO6HptLFNEGxGJG040Iw" />
           <AcmeProjectActionInfo Action="File" Source="hpl/sysctrl/hpl_sysctrl.c" IsConfig="false" Hash="eQqPWYKMdDlz1qVb4tBemw" />
-          <AcmeProjectActionInfo Action="File" Source="hpl/tc/tc_lite.c" IsConfig="false" Hash="VjxW83Lth3xaI3XducJtaA" />
-          <AcmeProjectActionInfo Action="File" Source="hpl/tc/tc_lite.h" IsConfig="false" Hash="4x0NKi1eKn1l++xeCJSaxA" />
-          <AcmeProjectActionInfo Action="File" Source="hpl/tcc/tcc_lite.c" IsConfig="false" Hash="2QbRcnetki0vfFWM1U6z0w" />
-          <AcmeProjectActionInfo Action="File" Source="hpl/tcc/tcc_lite.h" IsConfig="false" Hash="dWQxAg8nqsUUEn6qxOAOYQ" />
+          <AcmeProjectActionInfo Action="File" Source="hpl/tc/tc_lite.c" IsConfig="false" Hash="UC5AMlV5/tih4whWilCzfQ" />
+          <AcmeProjectActionInfo Action="File" Source="hpl/tc/tc_lite.h" IsConfig="false" Hash="5aetQVD+7bSHziWnQNcOjg" />
+          <AcmeProjectActionInfo Action="File" Source="hpl/tcc/tcc_lite.c" IsConfig="false" Hash="eoScfQW24CZyR4ktFllZbQ" />
+          <AcmeProjectActionInfo Action="File" Source="hpl/tcc/tcc_lite.h" IsConfig="false" Hash="wtj5bqwcTaRkQ2Y90qi3cQ" />
           <AcmeProjectActionInfo Action="File" Source="atmel_start.h" IsConfig="false" Hash="9RBG5E2ViQiSP2Gn4/FGpA" />
           <AcmeProjectActionInfo Action="File" Source="atmel_start.c" IsConfig="false" Hash="1RHIE7zTtYK4DURNPUqF9w" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_dmac_config.h" IsConfig="true" Hash="epQJaS6fYVwOO2L9+1CkQg" />
-          <AcmeProjectActionInfo Action="File" Source="config/hpl_gclk_config.h" IsConfig="true" Hash="KN0sjCqdK6EdH6+tWtaO6w" />
+          <AcmeProjectActionInfo Action="File" Source="config/hpl_gclk_config.h" IsConfig="true" Hash="ggStOMZKMW/JV6TQQV824Q" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_pm_config.h" IsConfig="true" Hash="GH0DautnKY3X7yLEFG4tgA" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_sysctrl_config.h" IsConfig="true" Hash="X13pwFfkH/55IzAGH+48Xg" />
-          <AcmeProjectActionInfo Action="File" Source="config/peripheral_clk_config.h" IsConfig="true" Hash="kuNmP2jGo9PtF7XkVxJ5rw" />
+          <AcmeProjectActionInfo Action="File" Source="config/peripheral_clk_config.h" IsConfig="true" Hash="SrDsFh4QpkDkP7P+8fZFLw" />
         </AcmeActionInfos>
         <NonsecureFilesInfo />
       </AcmeProjectConfig>
@@ -343,6 +343,7 @@
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
 </ArmGcc>
     </ToolchainSettings>
+    <PostBuildEvent>C:\Users\techi\AppData\Local\Arduino15\packages\arduino\tools\bossac\1.7.0/bossac -i -d --port=COM12 -U true -i -e -w -v "C:\Users\techi\Documents\Senior Project Repo\uLED\Basic Blinky\Basic Blinky\Debug\Basic Blinky.bin" -R</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="atmel_start.c">

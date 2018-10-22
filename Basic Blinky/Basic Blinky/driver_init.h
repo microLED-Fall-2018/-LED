@@ -26,27 +26,24 @@ extern "C" {
 #include <tc_lite.h>
 
 #include <tcc_lite.h>
-#include <tcc_lite.h>
 
-void redPWM_CLOCK_init(void);
+void redAction_CLOCK_init(void);
 
-int8_t redPWM_init(void);
+int8_t redAction_init(void);
 
-void greenPWM_CLOCK_init(void);
+void greenAction_CLOCK_init(void);
 
-int8_t greenPWM_init(void);
+int8_t greenAction_init(void);
 
-void bluePWM_CLOCK_init(void);
+void blueAction_CLOCK_init(void);
 
-int8_t bluePWM_init(void);
+int8_t blueAction_init(void);
 
-void beatTimer_CLOCK_init(void);
+void pwmTimer_CLOCK_init(void);
 
-int8_t beatTimer_init(void);
+void pwmTimer_PORT_init(void);
 
-void neoPixel_CLOCK_init(void);
-
-int8_t neoPixel_init(void);
+int8_t pwmTimer_init(void);
 
 /**
  * \brief Perform system initialization, initialize pins and clocks for

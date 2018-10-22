@@ -2,12 +2,12 @@ format_version: '2'
 name: Basic Blinky
 versions:
   api: '1.0'
-  backend: 1.3.73
-  commit: 75f2258d48912553b0bd533c92b20f36f54fe176
-  content: 1.0.1105
+  backend: 1.4.93
+  commit: 9c29f8365cf76e9937d19b1e765a83bc7a80e4e9
+  content: 1.0.1193
   content_pack_name: acme-packs-all
   format: '2'
-  frontend: 1.3.1765
+  frontend: 1.4.1787
 board:
   identifier: CustomBoard
   device: SAMD21G18A-AF
@@ -23,7 +23,7 @@ drivers:
     configuration:
       enable_gclk_gen_0: true
       enable_gclk_gen_1: true
-      enable_gclk_gen_2: true
+      enable_gclk_gen_2: false
       enable_gclk_gen_3: false
       enable_gclk_gen_4: false
       enable_gclk_gen_5: false
@@ -40,7 +40,7 @@ drivers:
       gclk_arch_gen_1_oe: false
       gclk_arch_gen_1_oov: false
       gclk_arch_gen_2_RUNSTDBY: false
-      gclk_arch_gen_2_enable: true
+      gclk_arch_gen_2_enable: false
       gclk_arch_gen_2_idc: false
       gclk_arch_gen_2_oe: false
       gclk_arch_gen_2_oov: false
@@ -75,7 +75,7 @@ drivers:
       gclk_gen_1_div: 800
       gclk_gen_1_div_sel: false
       gclk_gen_1_oscillator: 8MHz Internal Oscillator (OSC8M)
-      gclk_gen_2_div: 10
+      gclk_gen_2_div: 200
       gclk_gen_2_div_sel: false
       gclk_gen_2_oscillator: 8MHz Internal Oscillator (OSC8M)
       gclk_gen_3_div: 1
@@ -118,9 +118,9 @@ drivers:
         - name: CPU
           input: CPU
         configuration: {}
-  redPWM:
-    user_label: redPWM
-    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TC3::driver_config_definition::8-bit.Counter.Mode::Lite:TC:Timer
+  redAction:
+    user_label: redAction
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TC3::driver_config_definition::16-bit.Counter.Mode::Lite:TC:Timer
     functionality: Timer
     api: Lite:TC:Timer
     configuration:
@@ -131,11 +131,11 @@ drivers:
       count_count: 0
       ctrla_control: true
       ctrla_enable: true
-      ctrla_mode: 1
+      ctrla_mode: 0
       ctrla_prescaler: DIV1
       ctrla_prescsync: GCLK
       ctrla_runstdby: false
-      ctrla_wavegen: NFRQ
+      ctrla_wavegen: MFRQ
       ctrlbset_cmd: NONE
       ctrlbset_control: false
       ctrlbset_dir: false
@@ -145,7 +145,7 @@ drivers:
       ctrlc_cpten1: false
       dbgctrl_control: false
       dbgctrl_dbgrun: false
-      evctrl_control: true
+      evctrl_control: false
       evctrl_evact: 'OFF'
       evctrl_mceo0: false
       evctrl_mceo1: false
@@ -154,12 +154,10 @@ drivers:
       evctrl_tcinv: false
       intenset_control: true
       intenset_err: false
-      intenset_mc0: true
+      intenset_mc0: false
       intenset_mc1: false
       intenset_ovf: true
       intenset_syncrdy: false
-      per_control: false
-      per_per: 0
       readreq_addr: 0
       readreq_control: false
       readreq_rcont: false
@@ -173,9 +171,9 @@ drivers:
           input: Generic clock generator 1
         configuration:
           tc_gclk_selection: Generic clock generator 1
-  greenPWM:
-    user_label: greenPWM
-    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TC4::driver_config_definition::8-bit.Counter.Mode::Lite:TC:Timer
+  greenAction:
+    user_label: greenAction
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TC4::driver_config_definition::16-bit.Counter.Mode::Lite:TC:Timer
     functionality: Timer
     api: Lite:TC:Timer
     configuration:
@@ -186,11 +184,11 @@ drivers:
       count_count: 0
       ctrla_control: true
       ctrla_enable: true
-      ctrla_mode: 1
+      ctrla_mode: 0
       ctrla_prescaler: DIV1
       ctrla_prescsync: GCLK
       ctrla_runstdby: false
-      ctrla_wavegen: NFRQ
+      ctrla_wavegen: MFRQ
       ctrlbset_cmd: NONE
       ctrlbset_control: false
       ctrlbset_dir: false
@@ -200,21 +198,19 @@ drivers:
       ctrlc_cpten1: false
       dbgctrl_control: false
       dbgctrl_dbgrun: false
-      evctrl_control: true
+      evctrl_control: false
       evctrl_evact: 'OFF'
-      evctrl_mceo0: true
+      evctrl_mceo0: false
       evctrl_mceo1: false
-      evctrl_ovfeo: true
+      evctrl_ovfeo: false
       evctrl_tcei: false
       evctrl_tcinv: false
-      intenset_control: false
+      intenset_control: true
       intenset_err: false
       intenset_mc0: false
       intenset_mc1: false
-      intenset_ovf: false
+      intenset_ovf: true
       intenset_syncrdy: false
-      per_control: false
-      per_per: 0
       readreq_addr: 0
       readreq_control: false
       readreq_rcont: false
@@ -228,9 +224,9 @@ drivers:
           input: Generic clock generator 1
         configuration:
           tc_gclk_selection: Generic clock generator 1
-  bluePWM:
-    user_label: bluePWM
-    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TC5::driver_config_definition::8-bit.Counter.Mode::Lite:TC:Timer
+  blueAction:
+    user_label: blueAction
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TC5::driver_config_definition::16-bit.Counter.Mode::Lite:TC:Timer
     functionality: Timer
     api: Lite:TC:Timer
     configuration:
@@ -241,11 +237,11 @@ drivers:
       count_count: 0
       ctrla_control: true
       ctrla_enable: true
-      ctrla_mode: 1
+      ctrla_mode: 0
       ctrla_prescaler: DIV1
       ctrla_prescsync: GCLK
       ctrla_runstdby: false
-      ctrla_wavegen: NFRQ
+      ctrla_wavegen: MFRQ
       ctrlbset_cmd: NONE
       ctrlbset_control: false
       ctrlbset_dir: false
@@ -255,21 +251,19 @@ drivers:
       ctrlc_cpten1: false
       dbgctrl_control: false
       dbgctrl_dbgrun: false
-      evctrl_control: true
+      evctrl_control: false
       evctrl_evact: 'OFF'
-      evctrl_mceo0: true
+      evctrl_mceo0: false
       evctrl_mceo1: false
-      evctrl_ovfeo: true
+      evctrl_ovfeo: false
       evctrl_tcei: false
       evctrl_tcinv: false
-      intenset_control: false
+      intenset_control: true
       intenset_err: false
       intenset_mc0: false
       intenset_mc1: false
-      intenset_ovf: false
+      intenset_ovf: true
       intenset_syncrdy: false
-      per_control: false
-      per_per: 0
       readreq_addr: 0
       readreq_control: false
       readreq_rcont: false
@@ -641,11 +635,11 @@ drivers:
     variant: null
     clocks:
       domain_group: null
-  beatTimer:
-    user_label: beatTimer
-    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TCC0::driver_config_definition::Count.Mode::Lite:TCC:Count
+  pwmTimer:
+    user_label: pwmTimer
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TCC0::driver_config_definition::Capture.Mode::Lite:TCC:Capture
     functionality: Timer
-    api: Lite:TCC:Count
+    api: Lite:TCC:Capture
     configuration:
       cc_cc0: 0
       cc_cc1: 0
@@ -656,9 +650,13 @@ drivers:
       count_count: 0
       ctrla_alock: false
       ctrla_control: true
+      ctrla_cpten0: false
+      ctrla_cpten1: false
+      ctrla_cpten2: false
+      ctrla_cpten3: false
       ctrla_enable: true
-      ctrla_prescaler: DIV1
-      ctrla_prescsync: GCLK
+      ctrla_prescaler: DIV16
+      ctrla_prescsync: PRESC
       ctrla_runstdby: false
       ctrlbset_cmd: NONE
       ctrlbset_control: false
@@ -708,6 +706,8 @@ drivers:
       evctrl_tcinv1: false
       evctrl_trgeo: false
       fctrla_blank: NONE
+      fctrla_blankval: 0
+      fctrla_capture: DISABLE
       fctrla_chsel: CC0
       fctrla_control: false
       fctrla_filterval: 0
@@ -717,6 +717,8 @@ drivers:
       fctrla_restart: false
       fctrla_src: DISABLE
       fctrlb_blank: NONE
+      fctrlb_blankval: 0
+      fctrlb_capture: DISABLE
       fctrlb_chsel: CC0
       fctrlb_control: false
       fctrlb_filterval: 0
@@ -733,131 +735,86 @@ drivers:
       intenset_fault1: false
       intenset_faulta: false
       intenset_faultb: false
-      intenset_mc0: true
-      intenset_mc1: true
-      intenset_mc2: true
-      intenset_mc3: false
-      intenset_ovf: true
-      intenset_trg: false
-      per_control: false
-      per_per: 0
-    optional_signals: []
-    variant: null
-    clocks:
-      domain_group:
-        nodes:
-        - name: TCC
-          input: Generic clock generator 1
-        configuration:
-          tcc_gclk_selection: Generic clock generator 1
-  neoPixel:
-    user_label: neoPixel
-    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::TCC1::driver_config_definition::Count.Mode::Lite:TCC:Count
-    functionality: Timer
-    api: Lite:TCC:Count
-    configuration:
-      cc_cc0: 0
-      cc_cc1: 0
-      cc_cc2: 0
-      cc_cc3: 0
-      cc_control: false
-      count_control: false
-      count_count: 0
-      ctrla_alock: false
-      ctrla_control: true
-      ctrla_enable: true
-      ctrla_prescaler: DIV1
-      ctrla_prescsync: GCLK
-      ctrla_runstdby: false
-      ctrlbset_cmd: NONE
-      ctrlbset_control: false
-      ctrlbset_dir: false
-      ctrlbset_idxcmd: DISABLE
-      ctrlbset_lupd: false
-      ctrlbset_oneshot: false
-      dbgctrl_control: false
-      dbgctrl_dbgrun: false
-      dbgctrl_fddbd: false
-      drvctrl_control: false
-      drvctrl_filterval0: 0
-      drvctrl_filterval1: 0
-      drvctrl_nre0: false
-      drvctrl_nre1: false
-      drvctrl_nre2: false
-      drvctrl_nre3: false
-      drvctrl_nre4: false
-      drvctrl_nre5: false
-      drvctrl_nre6: false
-      drvctrl_nre7: false
-      drvctrl_nrv0: false
-      drvctrl_nrv1: false
-      drvctrl_nrv2: false
-      drvctrl_nrv3: false
-      drvctrl_nrv4: false
-      drvctrl_nrv5: false
-      drvctrl_nrv6: false
-      drvctrl_nrv7: false
-      evctrl_cnteo: false
-      evctrl_cntsel: START
-      evctrl_control: false
-      evctrl_evact0: 'OFF'
-      evctrl_evact1: 'OFF'
-      evctrl_mcei0: false
-      evctrl_mcei1: false
-      evctrl_mcei2: false
-      evctrl_mcei3: false
-      evctrl_mceo0: false
-      evctrl_mceo1: false
-      evctrl_mceo2: false
-      evctrl_mceo3: false
-      evctrl_ovfeo: false
-      evctrl_tcei0: false
-      evctrl_tcei1: false
-      evctrl_tcinv0: false
-      evctrl_tcinv1: false
-      evctrl_trgeo: false
-      fctrla_blank: NONE
-      fctrla_chsel: CC0
-      fctrla_control: false
-      fctrla_filterval: 0
-      fctrla_halt: DISABLE
-      fctrla_keep: false
-      fctrla_qual: false
-      fctrla_restart: false
-      fctrla_src: DISABLE
-      fctrlb_blank: NONE
-      fctrlb_chsel: CC0
-      fctrlb_control: false
-      fctrlb_filterval: 0
-      fctrlb_halt: DISABLE
-      fctrlb_keep: false
-      fctrlb_qual: false
-      fctrlb_restart: false
-      fctrlb_src: DISABLE
-      intenset_cnt: false
-      intenset_control: true
-      intenset_dfs: false
-      intenset_err: false
-      intenset_fault0: false
-      intenset_fault1: false
-      intenset_faulta: false
-      intenset_faultb: false
-      intenset_mc0: true
+      intenset_mc0: false
       intenset_mc1: false
       intenset_mc2: false
       intenset_mc3: false
       intenset_ovf: true
       intenset_trg: false
+      patt_control: true
+      patt_pge0: true
+      patt_pge1: true
+      patt_pge2: true
+      patt_pge3: false
+      patt_pgv0: false
+      patt_pgv1: false
+      patt_pgv2: false
+      patt_pgv3: false
       per_control: true
       per_per: 255
-    optional_signals: []
+      wave_ciccen0: false
+      wave_ciccen1: false
+      wave_ciccen2: false
+      wave_ciccen3: false
+      wave_ciperen: false
+      wave_control: true
+      wave_pol0: false
+      wave_pol1: false
+      wave_pol2: false
+      wave_pol3: false
+      wave_ramp: RAMP1
+      wave_swap0: false
+      wave_swap1: false
+      wave_swap2: false
+      wave_swap3: false
+      wave_wavegen: NFRQ
+    optional_signals:
+    - identifier: pwmTimer:WO/0
+      pad: PA04
+      mode: PWM output
+      configuration: null
+      definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::optional_signal_definition::TCC0.WO.0
+      name: TCC0/WO/0
+      label: WO/0
+    - identifier: pwmTimer:WO/1
+      pad: PA05
+      mode: PWM output
+      configuration: null
+      definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::optional_signal_definition::TCC0.WO.1
+      name: TCC0/WO/1
+      label: WO/1
+    - identifier: pwmTimer:WO/2
+      pad: PA10
+      mode: PWM output
+      configuration: null
+      definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::optional_signal_definition::TCC0.WO.2
+      name: TCC0/WO/2
+      label: WO/2
     variant: null
     clocks:
       domain_group:
         nodes:
         - name: TCC
-          input: Generic clock generator 1
+          input: Generic clock generator 0
         configuration:
-          tcc_gclk_selection: Generic clock generator 1
-pads: {}
+          tcc_gclk_selection: Generic clock generator 0
+pads:
+  PA04:
+    name: PA04
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::pad::PA04
+    mode: Peripheral IO
+    user_label: PA04
+    configuration: null
+  PA05:
+    name: PA05
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::pad::PA05
+    mode: Peripheral IO
+    user_label: PA05
+    configuration: null
+  PA10:
+    name: PA10
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::pad::PA10
+    mode: Peripheral IO
+    user_label: PA10
+    configuration: null
 toolchain_options: []

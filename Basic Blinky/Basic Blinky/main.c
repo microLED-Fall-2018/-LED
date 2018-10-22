@@ -8,7 +8,7 @@
 #define PORTA PORT->Group[0]
 #define PORTB PORT->Group[1]
 
-#define BPM 120		// Eventually this will be replaced with a flexible method
+#define BPM 40		// Eventually this will be replaced with a flexible method
 #define MAXINST 200	// Maximum number of instructions/sequence
 #define MAXSEQ 10
 #define RED 0
@@ -39,21 +39,19 @@ typedef struct {
 	} instTracker;
 	
 instruction shortDemo[200] =   {{0x00, 4, 1, 255},
-								{0x01, 2, 1, 255},
-								{0x41, 2, 1, 0},
-								{0x81, 2, 1, 0}};
+								{0x21, 4, 1, 255}, 
+								{0x41, 8, 1, 200},
+								{0x81, 16, 1, 128}};
 
 
-	/*{0x00, 2, 3, 255},
-								{0x00, 2, 2, 0},
-								{0x00, 2, 1, 255},
-								{0x01, 2, 1, 128},
-								{0x40, 2, 1, 0},
-								{0x40, 2, 1, 128},
-								{0x40, 2, 2, 255},
-								{0x41, 2, 3, 0},
-								{0x80, 2, 4, 0},
-								{0x81, 2, 3, 255}};*/
+								/*{{0x00, 4, 4, 200},
+								{0x00, 4, 4, 0},
+								{0x01, 4, 2, 200},
+								{0x40, 4, 2, 0},
+								{0x40, 4, 4, 200},
+								{0x41, 4, 4, 0},
+								{0x80, 4, 6, 0},
+								{0x81, 4, 4, 200}};*/
 /* Steps per beat lookup Table
  * A quick table to find the number of steps/beat in bpm
  * Works for 10-256 bpm
@@ -76,7 +74,7 @@ uint16_t stepsPerBeatTable[256] = {	60000,	60000,	60000,	60000,	60000,	60000,	60
 									2667,	2655,	2643,	2632,	2620,	2609,	2597,	2586,	2575,	2564,	2553,	2542,	2532,	2521,	2510,	2500,
 									2490,	2479,	2469,	2459,	2449,	2439,	2429,	2419,	2410,	2400,	2390,	2381,	2372,	2362,	2353,	2344};
 
-uint8_t bpm = 40;
+uint8_t bpm = BPM;
 
 uint16_t stepsPerBeat, nextBeat; 
 uint8_t beatsCurr = 0;
@@ -87,66 +85,49 @@ instruction sequences[MAXSEQ][MAXINST];
 uint8_t sequenceCurr = 0;
 	
 instTracker tracker[3]; // Tracks the instructions for each color
-uint8_t intensity[3];
+uint8_t maxIntensity[3];
+uint8_t currIntensity[3];
 uint16_t nextAction[3]; // the count the next action should occur on. Should wrap around (say if at 65000 and next in 1000)
 uint16_t diffs[3]; // increase over current count for next action
 uint16_t countMax;
-uint8_t increment;
+uint8_t increment[3];
+uint8_t direction;
 uint8_t firstTime = 0;
 
 uint8_t beatsRemaining[3] = {0, 0, 0};
+uint16_t actionsRemaining[3] = {0, 0,0};
 uint8_t isOn[3] = {0, 0, 0}; // For sequences, is the instruction currently on?
 
 void populateTracker(instruction[]);
 void updateStepsPerBeat(uint8_t);
 void processInstruction(instruction);
 void nextInstruction(uint8_t);
-void flash(uint8_t);//, uint16_t);
+void flash(uint8_t);
+void fade(uint8_t);
+void rampUp(uint8_t);
+void rampDown(uint8_t);
 void (*action)(uint8_t);//, uint16_t);
 void testByColor(uint8_t, uint8_t);
 
 int main(void)
 {
-	
-	
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 	
 	NVIC_DisableIRQ(TC3_IRQn);
 	NVIC_DisableIRQ(TC4_IRQn);
 	NVIC_DisableIRQ(TC5_IRQn);
-	NVIC_DisableIRQ(TCC0_IRQn);
-
 	
 	// For testing, instantiate sequence 0 with short Demo
 	int i;
 	for (i = 0; i < 200; i++)
 		sequences[sequenceCurr][i] = shortDemo[i];
-	/*
-	testByColor(RED,1);
-	PORTA.OUT.reg &= ~(1 << 2);
-	delay_ms(250);
-	testByColor(RED,0);	
-	delay_ms(250);		
-	testByColor(GREEN,1);
-	delay_ms(250);	
-	testByColor(GREEN,0);
-	testByColor(BLUE,1);
-	delay_ms(250);
-	testByColor(BLUE,0);
-	*/	
-
 	
 	updateStepsPerBeat(bpm);
-	//nextBeat = stepsPerBeat;
-	//countMax = (uint16_t)(65536 / stepsPerBeat) * stepsPerBeat; // Hopefully the truncation works this out...
 	
-	TCC0->PER.reg = stepsPerBeat;
-	
-	// For testing only.  Can be removed once working with actual flash sequences
-	PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
-	PORTA.DIRSET.reg = 1 << 2 | 1 << 4 | 1 << 5;
-		
+	TCC0->PER.reg = 255;
+	TCC0->WAVE.reg |= TCC_WAVE_WAVEGEN_NPWM | 0x7 << 16;
+
 	populateTracker(sequences[sequenceCurr]);
 	tracker[RED].curr = tracker[RED].first;
 	tracker[GREEN].curr = tracker[GREEN].first;
@@ -156,76 +137,22 @@ int main(void)
 	processInstruction(sequences[sequenceCurr][tracker[GREEN].curr]);
 	processInstruction(sequences[sequenceCurr][tracker[BLUE].curr]);
 	
+	TCC0->CC[RED].reg = currIntensity[RED];
+	TCC0->CC[GREEN].reg = currIntensity[GREEN];
+	TCC0->CC[BLUE].reg = currIntensity[BLUE];
+	
 	NVIC_EnableIRQ(TC3_IRQn);
 	NVIC_EnableIRQ(TC4_IRQn);
 	NVIC_EnableIRQ(TC5_IRQn);
-	NVIC_EnableIRQ(TCC0_IRQn);
 
-	NVIC_SetPriority(TC3_IRQn, 3);
-	NVIC_SetPriority(TC4_IRQn, 3);
-	NVIC_SetPriority(TC5_IRQn, 3);
-	NVIC_SetPriority(TCC0_IRQn, 2);
+	NVIC_SetPriority(TC3_IRQn, 2);
+	NVIC_SetPriority(TC4_IRQn, 2);
+	NVIC_SetPriority(TC5_IRQn, 2);
 
 	while(1)
 	{	
-		//uint8_t intenCurr = INTEN_TIMER.COUNT.reg;
-		//uint16_t stepCurr = STEP_TIMER.COUNT.reg;
-		
-/*		if (stepCurr >= nextAction[RED])
-			action(RED, stepCurr);
-		if (stepCurr >= nextAction[GREEN])
-			action(GREEN, stepCurr);
-		if (stepCurr >= nextAction[BLUE])
-			action(BLUE, stepCurr);*/
-			
-		
-		// Since instructions only change on beat, this may be a good spot to use a counter with CC0 = steps/beat
-		/*if (stepCurr >= nextBeat)
-		{	
-			if (stepCurr >= countMax)
-			{
-				TC4->COUNT16.COUNT.reg = 0;
-				nextBeat = stepsPerBeat;
-			}
-			else
-				nextBeat = stepCurr + stepsPerBeat;
-			
-			if (--beatsRemaining[RED] == 0)
-			{
-				nextInstruction(RED);
-				processInstruction(sequences[sequenceCurr][tracker[RED].curr]);
-			}
-			if (--beatsRemaining[GREEN] == 0)
-			{
-				nextInstruction(GREEN);
-				processInstruction(sequences[sequenceCurr][tracker[GREEN].curr]);
-			}
-			if (--beatsRemaining[BLUE] == 0)
-			{
-				nextInstruction(BLUE);
-				processInstruction(sequences[sequenceCurr][tracker[BLUE].curr]);
-			}
-		}
-		
-		uint32_t currOut = PORTA.OUT.reg;
-		
-		if (intenCurr < intensity[RED] && isOn[RED])
-			currOut &= ~(1 << 2);
-		else
-			currOut |= 1 << 2;
-
-		if (intenCurr < intensity[GREEN] && isOn[GREEN])
-			currOut &= ~(1 << 4);
-		else
-			currOut |= 1 << 4;
-		if (intenCurr < intensity[BLUE] && isOn[BLUE])
-			currOut &= ~(1 << 5);
-		else
-			currOut |= 1 << 5;*/
-		
 		// Heartbeat
-		PORTA.OUTTGL.reg = 1 << 17;
-		
+		PORTA.OUTTGL.reg = 1 << 17;		
 		delay_ms(100);
 	}
 }
@@ -247,28 +174,9 @@ void populateTracker(instruction insts[200])
 	{
 		PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
 			
-			/*if (count == RED)
-			PORTA.OUT.reg &= ~(1 << 2);
-			else if (count == GREEN)
-			PORTA.OUT.reg = ~(1 << 4);
-			else if (count == BLUE)
-			PORTA.OUT.reg &= ~(1 << 5);
-			else
-			PORTA.OUT.reg = 1 << 2 | 1 << 5;
-			
-			delay_ms(250);
-			
-			PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
-			
-			delay_ms(250);
-			*/
 		// A 1 in the 24th position indicates the last instruction in a color
 		if(insts[i++].inst & 0x01)
 		{
-		/*	PORTA.OUT.reg &= ~(1 << 2 | 1 << 4 | 1 << 5);
-			delay_ms(250);
-			PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
-			delay_ms(250);*/
 			
 			tracker[count++].last = i - 1;
 			
@@ -291,42 +199,42 @@ void updateStepsPerBeat(uint8_t bpm)
 // 3. If it's a flash, fade, or ramp, process accordingly 
 void processInstruction(instruction inst)
 {
-	uint8_t whichColor	= (inst.inst >> 6) & 0x3;
+	uint8_t color	= (inst.inst >> 6) & 0x3;
 	uint8_t whatKind	= (inst.inst >> 4) & 0x3;
 	
-	/*PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
-	
-	if (whichColor == RED)
-		PORTA.OUT.reg &= ~(1 << 2);
-	else if (whichColor == GREEN)
-		PORTA.OUT.reg = ~(1 << 4);
-	else if (whichColor == BLUE)
-		PORTA.OUT.reg &= ~(1 << 5);
-	else 
-		PORTA.OUT.reg &= ~(1 << 2 | 1 << 4 | 1 << 5);
-	
-	delay_ms(125);
-	
-	PORTA.OUT.reg |= 1 << 2 | 1 << 4 | 1 << 5;
-	
-	delay_ms(125);
-	*/
 	switch(whatKind)
 	{
 		case FLASH:
-			intensity[whichColor] = inst.bright;
-			beatsRemaining[whichColor] = inst.dur;
-			//isOn[whichColor] = 0; //isOn[whichColor] ? 1 : 0;
-			diffs[whichColor] = (stepsPerBeat / inst.rate) >> 1;
-			//nextAction[whichColor] = diffs[whichColor];	
-		
+			maxIntensity[color] = inst.bright;
+			currIntensity[color] = maxIntensity[color];
+			actionsRemaining[color] = (inst.dur * inst.rate) << 1;
+			diffs[color] = (stepsPerBeat / inst.rate) >> 1;
 			action = &flash;
 			break;
 		case FADE:
+			increment[color] = inst.bright >> 4;
+			maxIntensity[color] = increment[color] << 4;
+			currIntensity[color] = 0;
+			actionsRemaining[color] = (inst.dur * inst.rate) << 4; // x16x2 = x32 = << 5
+			diffs[color] = (stepsPerBeat / inst.rate) >> 4;
+			direction = 1;
+			action = &fade;
 			break;
 		case RAMPUP:
+			increment[color] = inst.bright >> 4;
+			maxIntensity[color] = increment[color] << 4;
+			currIntensity[color] = 0;
+			actionsRemaining[color] = (inst.dur * inst.rate) << 4; // x16x2 = x32 = << 5
+			diffs[color] = (stepsPerBeat / inst.rate) >> 4;
+			action = &rampUp;
 			break;
 		case RAMPDN:
+			increment[color] = inst.bright >> 4;
+			maxIntensity[color] = increment[color] << 4;
+			currIntensity[color] = maxIntensity[color];
+			actionsRemaining[color] = (inst.dur * inst.rate) << 4; // x16x2 = x32 = << 5
+			diffs[color] = (stepsPerBeat / inst.rate) >> 4;
+			action = &rampDown;
 			break;
 		default:
 			while(1) // Error state
@@ -336,84 +244,70 @@ void processInstruction(instruction inst)
 			}
 			break;
 	}
-	
-	//if (firstTime < 3)
-	//{
-		PORTA.OUT.reg &= ~(1 << 4 | 1 << 5);
-		delay_ms(250);
-		PORTA.OUT.reg |= 1 << 4 | 1 << 5;
-		delay_ms(250);
-		
-	
-		//firstTime++;
-		switch(whichColor)
-			{
-			case RED:
-				TCC0->CC[0].reg = TCC0->COUNT.reg + diffs[RED];
-				TC3->COUNT8.CC[0].reg = intensity[RED];
-				break;
-			case GREEN:
-				TCC0->CC[1].reg = TCC0->COUNT.reg + diffs[GREEN];
-				TC4->COUNT8.CC[0].reg = intensity[GREEN];
-				break;
-			case BLUE:
-				TCC0->CC[2].reg = TCC0->COUNT.reg + diffs[BLUE];
-				TC5->COUNT8.CC[0].reg = intensity[BLUE];
-				break;
-			default:
-				while(1) // Error state
-				{
-					PORTA.OUTTGL.reg = 1 << 2 | 1 << 4 | 1 << 5;
-					delay_ms(500);
-				}
-				break;
-			}
-	/*}
-	else
-	{
-		switch(whichColor)
-		{
-			case RED:
-				TC3->COUNT8.CC[0].reg = intensity[RED];
-			break;
-			case GREEN:
-				TC4->COUNT8.CC[0].reg = intensity[GREEN];
-			break;
-			case BLUE:
-				TC5->COUNT8.CC[0].reg = intensity[BLUE];
-			break;
-			default:
-				while(1) // Error state
-				{
-					PORTA.OUTTGL.reg = 1 << 2 | 1 << 4 | 1 << 5;
-					delay_ms(500);
-				}
-			break;
-		}
-	}*/
-}
-
-void flash(uint8_t color)//, uint16_t count)
-{
-	// super clumsy...
 	switch(color)
 	{
-		case RED:
-			TC3->COUNT8.CC[0].reg = (TC3->COUNT8.CC[0].reg == 0) ? intensity[RED] : 0;
-			break;
-		case GREEN:
-			TC4->COUNT8.CC[0].reg = (TC4->COUNT8.CC[0].reg == 0) ? intensity[GREEN] : 0;
-			break;
-		case BLUE:
-			TC5->COUNT8.CC[0].reg = (TC5->COUNT8.CC[0].reg == 0) ? intensity[BLUE] : 0;
-			break;
-		default:
-			break;
+	case RED:
+		TC3->COUNT16.CC[0].reg = diffs[color];
+		break;
+	case GREEN:
+		TC4->COUNT16.CC[0].reg = diffs[color];
+		break;
+	case BLUE:
+		TC5->COUNT16.CC[0].reg = diffs[color];
+		break;
+	default:
+		while(1) // Error state
+		{
+			PORTA.OUTTGL.reg = 1 << 2 | 1 << 4 | 1 << 5;
+			delay_ms(500);
+		}
+		break;
 	}
-	//nextAction[color] = count + diffs[color];
+}
+
+void flash(uint8_t color)
+{
+	currIntensity[color] = (currIntensity[color] == maxIntensity[color]) ? 0 : maxIntensity[color];		
 	
-	//if (nextAction[color] >= countMax)
-		//nextAction[color] -= countMax;
+	TCC0->CC[color].reg = currIntensity[color];
+	
+}
+
+void fade(uint8_t color)
+{
+	// If we hit the max intensity or zero, change direction
+	// Otherwise direction stays the same.
+	if (currIntensity[color] >= maxIntensity[color])
+		direction = 0; // falling
+	else if (currIntensity[color] <= 0)
+		direction = 1; // rising	
+		
+	if (direction != 0)
+		currIntensity[color] += increment[color];
+	else
+		currIntensity[color] -= increment[color];
+		
+	TCC0->CC[color].reg = currIntensity[color];
+}
+
+void rampUp(uint8_t color)
+{
+	if (currIntensity[color] >= maxIntensity[color])
+		currIntensity[color] = 0;
+	else
+		currIntensity[color] += increment[color];
+		
+	TCC0->CC[color].reg = currIntensity[color];
+}
+
+void rampDown(uint8_t color)
+{
+	if (currIntensity[color] <= 0)
+		currIntensity[color] = maxIntensity[color];
+	else
+		currIntensity[color] -= increment[color];
+		
+	TCC0->CC[color].reg = currIntensity[color];
 }
 
 void nextInstruction(uint8_t color)
@@ -424,117 +318,86 @@ void nextInstruction(uint8_t color)
 		tracker[color].curr = tracker[color].curr + 1;
 }
 
-void TCC0_Handler()
-{
-	//testByColor(RED,1);
-	//testByColor(GREEN,1);
-	//testByColor(BLUE,1);
-	// Action completed RED, GREEN, BLUE
-	if (TCC0->INTFLAG.reg & TCC_INTFLAG_MC0)
-	{
-		TCC0->CC[RED].reg += diffs[RED];
-		action(RED); // Load next action
-		TCC0->INTFLAG.reg |= TCC_INTFLAG_MC0;
-	}
-	
-	if (TCC0->INTFLAG.reg & TCC_INTFLAG_MC1)
-	{
-		TCC0->CC[GREEN].reg += diffs[GREEN];
-		action(GREEN);
-		TCC0->INTFLAG.reg |= TCC_INTFLAG_MC1;
-	}
-	
-	if (TCC0->INTFLAG.reg & TCC_INTFLAG_MC2)
-	{
-		TCC0->CC[BLUE].reg += diffs[BLUE];
-		action(BLUE);
-		TCC0->INTFLAG.reg |= TCC_INTFLAG_MC2;
-	}
-		
-	// Beat completed
+/*
+	// End of period, turn everything back on.
 	if (TCC0->INTFLAG.reg & TCC_INTFLAG_OVF)
 	{
-		// RED = 0, GREEN = 1, BLUE = 2
-		uint8_t i;
-		
-		for(i = 0; i < 3; i++)
-		{
+		if (currIntensity[RED] != 0)
+			PORTA.OUT.reg &= ~(1 << 2);
+		if (currIntensity[GREEN] != 0)
+			PORTA.OUT.reg &= ~(1 << 4);
+		if (currIntensity[BLUE] != 0)
+			PORTA.OUT.reg &= ~(1 << 5);
 			
-		// testByColor(i,1);
+		TCC0->CC[RED].reg = currIntensity[RED];
+		TCC0->CC[GREEN].reg = currIntensity[GREEN];
+		TCC0->CC[BLUE].reg = currIntensity[BLUE];
 			
-			if (--beatsRemaining[i] == 0)
-			{
-				nextInstruction(i);
-				processInstruction(sequences[sequenceCurr][tracker[i].curr]);			
-				/*TCC0->INTFLAG.reg |= TCC_INTFLAG_MC0;
-				TCC0->INTFLAG.reg |= TCC_INTFLAG_MC1;
-				TCC0->INTFLAG.reg |= TCC_INTFLAG_MC2;
-				TCC0->INTFLAG.reg |= TCC_INTFLAG_OVF;
-				return;*/		
-			}
-			else
-				TCC0->CC[i].reg = TCC0->COUNT.reg + diffs[i];
-		}
-		TCC0->INTFLAG.reg |= TCC_INTFLAG_OVF;
+		TCC0->INTFLAG.reg |= TCC_INTFLAG_OVF | TCC_INTFLAG_MC0 | TCC_INTFLAG_MC1 | TCC_INTFLAG_MC2;
+		return;
 	}
-	
-	//testByColor(RED,0);
-	//testByColor(GREEN,0);
-	//testByColor(BLUE,0);
-}
+	else
+	{	
+		// End of pulse width, turn elements off.
+		if ((TCC0->INTFLAG.reg & TCC_INTFLAG_MC0) | (TCC0->INTFLAG.reg & TCC_INTFLAG_MC1) | (TCC0->INTFLAG.reg & TCC_INTFLAG_MC2))
+		{
+			uint8_t count = TCC0->COUNT.reg >> 4;
+			
+			if (count >= currIntensity[RED])
+				PORTA.OUT.reg |= 1 << 2;
+			
+			if (count >= currIntensity[GREEN])
+				PORTA.OUT.reg |= 1 << 4;
+				
+			if (count >= currIntensity[BLUE])
+				PORTA.OUT.reg |= 1 << 5;
+			
+			TCC0->INTFLAG.reg |= TCC_INTFLAG_MC0 | TCC_INTFLAG_MC1 | TCC_INTFLAG_MC2;
+		}
+	}
+}*/
 
 void TC3_Handler()
 {	
-	//testByColor(RED,1);
-
-	if ((TC3->COUNT8.INTFLAG.reg & TC_INTFLAG_MC0) && TC3->COUNT8.CC[0].reg != 0)
-	{
-		PORTA.OUT.reg |= 1 << 2;
-		TC3->COUNT8.INTFLAG.reg |= TC_INTFLAG_MC0;
+	if (TC3->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF)
+	{	
+		action(RED);
+		if (--actionsRemaining[RED] <= 0)
+		{			
+			nextInstruction(RED);
+			processInstruction(sequences[sequenceCurr][tracker[RED].curr]);
+		}
 	}
-	else if ((TC3->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF) && TC3->COUNT8.CC[0].reg != 255)
-	{
-		PORTA.OUT.reg &= ~(1 << 2);
-		TC3->COUNT8.INTFLAG.reg |= TC_INTFLAG_OVF;
-	}	
-	//testByColor(RED,0);
-
+	
+	TC3->COUNT16.INTFLAG.reg |= TC_INTFLAG_OVF;
 }
 
 void TC4_Handler()
 {
-	//testByColor(GREEN,1);
-
-	if ((TC4->COUNT8.INTFLAG.reg & TC_INTFLAG_MC0) && TC4->COUNT8.CC[0].reg != 0)
+	if (TC4->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF)
 	{
-		PORTA.OUT.reg |= (1 << 4);
-		TC4->COUNT8.INTFLAG.reg |= TC_INTFLAG_MC0;
+		action(GREEN);
+		if (--actionsRemaining[GREEN] <= 0)
+		{
+			nextInstruction(GREEN);
+			processInstruction(sequences[sequenceCurr][tracker[GREEN].curr]);
+		}
 	}
-	else if ((TC4->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF) && TC4->COUNT8.CC[0].reg != 255)
-	{
-		PORTA.OUT.reg &= ~(1 << 4);
-		TC4->COUNT8.INTFLAG.reg |= TC_INTFLAG_OVF;
-	}
-	//testByColor(GREEN,0);
-
+	TC4->COUNT16.INTFLAG.reg |= TC_INTFLAG_OVF;
 }
 
 void TC5_Handler()
 {
-	//testByColor(BLUE,1);
-
-	if ((TC5->COUNT8.INTFLAG.reg & TC_INTFLAG_MC0) && TC5->COUNT8.CC[0].reg != 0)
+	if (TC5->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF)
 	{
-		PORTA.OUT.reg |= (1 << 5);
-		TC5->COUNT8.INTFLAG.reg |= TC_INTFLAG_MC0;
+		action(BLUE);
+		if (--actionsRemaining[BLUE] <= 0)
+		{
+			nextInstruction(BLUE);
+			processInstruction(sequences[sequenceCurr][tracker[BLUE].curr]);
+		}
 	}
-	else if ((TC5->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF) && TC5->COUNT8.CC[0].reg != 255)
-	{
-		PORTA.OUT.reg &= ~(1 << 5);
-		TC5->COUNT8.INTFLAG.reg |= TC_INTFLAG_OVF;
-	}
-	//testByColor(BLUE,0);
-
+	TC5->COUNT16.INTFLAG.reg |= TC_INTFLAG_OVF;
 }
 
 void testByColor(uint8_t color, uint8_t val)
@@ -548,17 +411,17 @@ void testByColor(uint8_t color, uint8_t val)
 				PORTA.OUT.reg |= 1<<2;
 			break;
 		case GREEN:
-		if (val != 0)
-			PORTA.OUT.reg &= ~(1<<4);
-		else
-			PORTA.OUT.reg |= 1<<4;
-			break;
+			if (val != 0)
+				PORTA.OUT.reg &= ~(1<<4);
+			else
+				PORTA.OUT.reg |= 1<<4;
+				break;
 		case BLUE:
-		if (val != 0)
-			PORTA.OUT.reg &= ~(1<<5);
-		else
-			PORTA.OUT.reg |= 1<<5;
-			break;
+			if (val != 0)
+				PORTA.OUT.reg &= ~(1<<5);
+			else
+				PORTA.OUT.reg |= 1<<5;
+				break;
 		default:
 			break;
 	}

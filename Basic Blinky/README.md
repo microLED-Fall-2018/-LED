@@ -5,7 +5,7 @@ The line under properties->toolchain->Misc. must be updated to this for the proj
 Run this line in a command line window to make the project run.
 
 You'll have to update the arduino install location and project .bin location
-C:\Users\techi\AppData\Local\Arduino15\packages\arduino\tools\bossac\1.7.0/bossac -i -d --port=COM12 -U true -i -e -w -v "C:\Users\techi\Documents\Senior Project Repo\-LED\Basic Blinky\Basic Blinky\Debug\Basic Blinky.bin" -R 
+C:\Users\techi\AppData\Local\Arduino15\packages\arduino\tools\bossac\1.7.0/bossac -i -d --port=COM12 -U true -i -e -w -v "C:\Users\techi\Documents\Senior Project Repo\uLED\Basic Blinky\Basic Blinky\Debug\Basic Blinky.bin" -R 
 
 Also, you will have to figure out what port the Feather is on.
 Press the feathers button twice quickly to go into progrmaming mode.  The LED will fade up and down slowly.

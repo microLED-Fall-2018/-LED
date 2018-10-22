@@ -55,13 +55,7 @@ extern "C" {
  * \brief Initialize tcc interface
  * \return Initialization status.
  */
-int8_t beatTimer_init();
-
-/**
- * \brief Initialize tcc interface
- * \return Initialization status.
- */
-int8_t neoPixel_init();
+int8_t pwmTimer_init();
 
 #ifdef __cplusplus
 }

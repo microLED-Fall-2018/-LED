@@ -55,19 +55,19 @@ extern "C" {
  * \brief Initialize tc interface
  * \return Initialization status.
  */
-int8_t redPWM_init();
+int8_t redAction_init();
 
 /**
  * \brief Initialize tc interface
  * \return Initialization status.
  */
-int8_t greenPWM_init();
+int8_t greenAction_init();
 
 /**
  * \brief Initialize tc interface
  * \return Initialization status.
  */
-int8_t bluePWM_init();
+int8_t blueAction_init();
 
 #ifdef __cplusplus
 }

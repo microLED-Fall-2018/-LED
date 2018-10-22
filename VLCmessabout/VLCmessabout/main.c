@@ -2,6 +2,7 @@
 
 #define PORTA PORT->Group[0]
 
+
 static void sendByte(uint8_t);
 
 int main(void)
@@ -9,9 +10,11 @@ int main(void)
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 	
-	PORTA.DIR.reg |= 1 << 2;
-	PORTA.CTRL.reg  |= 1 << 3;
-	PORTA.PINCFG[3].reg |= PORT_PINCFG_INEN |PORT_PINCFG_PULLEN;
+	PORTA.DIR.reg |= 1 << 2 | 1 << 4 | 1 << 5;
+	
+	//PORTA.CTRL.reg  |= 1 << 3;
+	PORTA.PINCFG[3].reg |= PORT_PINCFG_PMUXEN;//PORT_PINCFG_INEN;// | PORT_PINCFG_PULLEN;
+	PORTA.PMUX[1].reg |= PINMUX_PA03B_ADC_AIN1;
 	
 	NVIC_SetPriority(SERCOM3_IRQn, 2);
 	
@@ -20,29 +23,27 @@ int main(void)
 	SERCOM3->USART.INTENSET.reg |= 1 << 0 | 1 << 1;
 	
 	uint8_t step = 0;
-	uint8_t count;
+	uint8_t count = 0;
 	
-	while (1) {
-		count = 0;
+	while (1) 
+	{
+		if (PORTA.IN.reg & 1 << 3)
+		{	
+			PORTA.OUT.reg |= 1 << 4;
+			PORTA.OUT.reg &= ~(1 << 5);
+		}
+		else
+		{
+			PORTA.OUT.reg |= 1 << 5;
+			PORTA.OUT.reg &= ~(1 << 4);
+		}
 		
-		PORTA.DIR.reg |= 1 << 3;
-		PORTA.OUT.reg |= 1 << 3;
-		delay_us(100);
-		PORTA.DIR.reg &= ~(1 << 3);
-		PORTA.OUT.reg &= ~(1 << 3);
-		while ((PORTA.IN.reg & (1 << 3)))
-			count++;
-		
-		if (step++ & 4)
+		if (count++ & 128)
 			PORTA.OUT.reg |= 1 << 2;
 		else
 			PORTA.OUT.reg &= ~(1 << 2);
 		
-		sendByte((count > 100) ? '0' : '1');
-		//sendByte('\n');
-		//sendByte('\r');
-		
-		delay_ms(10);
+		delay_ms(1);
 	}
 }
 

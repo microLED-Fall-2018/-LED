@@ -37,7 +37,7 @@
 /**
  * \brief Initialize TC interface
  */
-int8_t redPWM_init()
+int8_t redAction_init()
 {
 
 	hri_tc_wait_for_sync(TC3);
@@ -52,8 +52,8 @@ int8_t redPWM_init()
 	                       0 << TC_CTRLA_PRESCSYNC_Pos       /* Prescaler and Counter Synchronization: 0 */
 	                           | 0 << TC_CTRLA_RUNSTDBY_Pos  /* Run in Standby: disabled */
 	                           | 0 << TC_CTRLA_PRESCALER_Pos /* Setting: 0 */
-	                           | 0 << TC_CTRLA_WAVEGEN_Pos   /* Waveform Generation Operation: 0 */
-	                           | 0x1 << TC_CTRLA_MODE_Pos);  /* Operating Mode: 0x1 */
+	                           | 1 << TC_CTRLA_WAVEGEN_Pos   /* Waveform Generation Operation: 1 */
+	                           | 0x0 << TC_CTRLA_MODE_Pos);  /* Operating Mode: 0x0 */
 
 	// hri_tc_write_CTRLB_reg(TC3,0 << TC_CTRLBSET_CMD_Pos /* Command: 0 */
 	//		 | 0 << TC_CTRLBSET_ONESHOT_Pos /* One-Shot: disabled */
@@ -68,13 +68,11 @@ int8_t redPWM_init()
 
 	// hri_tc_write_DBGCTRL_reg(TC3,0); /* Run in debug: 0 */
 
-	// hri_tccount8_write_CC_reg(TC3, 0 ,0x0); /* Compare/Capture Value: 0x0 */
+	// hri_tccount16_write_CC_reg(TC3, 0 ,0x0); /* Compare/Capture Value: 0x0 */
 
-	// hri_tccount8_write_CC_reg(TC3, 1 ,0x0); /* Compare/Capture Value: 0x0 */
+	// hri_tccount16_write_CC_reg(TC3, 1 ,0x0); /* Compare/Capture Value: 0x0 */
 
-	// hri_tccount8_write_COUNT_reg(TC3,0x0); /* Counter Value: 0x0 */
-
-	// hri_tc_write_PER_reg(TC3,0x0); /*  Period Value: 0x0 */
+	// hri_tccount16_write_COUNT_reg(TC3,0x0); /* Counter Value: 0x0 */
 
 	// hri_tc_write_EVCTRL_reg(TC3,0 << TC_EVCTRL_MCEO0_Pos /* Match or Capture Channel 0 Event Output Enable: disabled
 	// */
@@ -85,7 +83,7 @@ int8_t redPWM_init()
 	//		 | 0); /* Event Action: 0 */
 
 	hri_tc_write_INTEN_reg(TC3,
-	                       1 << TC_INTENSET_MC0_Pos       /* Match or Capture Channel 0 Interrupt Enable: enabled */
+	                       0 << TC_INTENSET_MC0_Pos       /* Match or Capture Channel 0 Interrupt Enable: disabled */
 	                           | 0 << TC_INTENSET_MC1_Pos /* Match or Capture Channel 1 Interrupt Enable: disabled */
 	                           | 0 << TC_INTENSET_SYNCRDY_Pos /* Synchronization Ready Interrupt Enable: disabled */
 	                           | 0 << TC_INTENSET_ERR_Pos     /* Error Interrupt Enable: disabled */
@@ -99,7 +97,7 @@ int8_t redPWM_init()
 /**
  * \brief Initialize TC interface
  */
-int8_t greenPWM_init()
+int8_t greenAction_init()
 {
 
 	hri_tc_wait_for_sync(TC4);
@@ -114,8 +112,8 @@ int8_t greenPWM_init()
 	                       0 << TC_CTRLA_PRESCSYNC_Pos       /* Prescaler and Counter Synchronization: 0 */
 	                           | 0 << TC_CTRLA_RUNSTDBY_Pos  /* Run in Standby: disabled */
 	                           | 0 << TC_CTRLA_PRESCALER_Pos /* Setting: 0 */
-	                           | 0 << TC_CTRLA_WAVEGEN_Pos   /* Waveform Generation Operation: 0 */
-	                           | 0x1 << TC_CTRLA_MODE_Pos);  /* Operating Mode: 0x1 */
+	                           | 1 << TC_CTRLA_WAVEGEN_Pos   /* Waveform Generation Operation: 1 */
+	                           | 0x0 << TC_CTRLA_MODE_Pos);  /* Operating Mode: 0x0 */
 
 	// hri_tc_write_CTRLB_reg(TC4,0 << TC_CTRLBSET_CMD_Pos /* Command: 0 */
 	//		 | 0 << TC_CTRLBSET_ONESHOT_Pos /* One-Shot: disabled */
@@ -130,28 +128,26 @@ int8_t greenPWM_init()
 
 	// hri_tc_write_DBGCTRL_reg(TC4,0); /* Run in debug: 0 */
 
-	// hri_tccount8_write_CC_reg(TC4, 0 ,0x0); /* Compare/Capture Value: 0x0 */
+	// hri_tccount16_write_CC_reg(TC4, 0 ,0x0); /* Compare/Capture Value: 0x0 */
 
-	// hri_tccount8_write_CC_reg(TC4, 1 ,0x0); /* Compare/Capture Value: 0x0 */
+	// hri_tccount16_write_CC_reg(TC4, 1 ,0x0); /* Compare/Capture Value: 0x0 */
 
-	// hri_tccount8_write_COUNT_reg(TC4,0x0); /* Counter Value: 0x0 */
+	// hri_tccount16_write_COUNT_reg(TC4,0x0); /* Counter Value: 0x0 */
 
-	// hri_tc_write_PER_reg(TC4,0x0); /*  Period Value: 0x0 */
+	// hri_tc_write_EVCTRL_reg(TC4,0 << TC_EVCTRL_MCEO0_Pos /* Match or Capture Channel 0 Event Output Enable: disabled
+	// */
+	//		 | 0 << TC_EVCTRL_MCEO1_Pos /* Match or Capture Channel 1 Event Output Enable: disabled */
+	//		 | 0 << TC_EVCTRL_OVFEO_Pos /* Overflow/Underflow Event Output Enable: disabled */
+	//		 | 0 << TC_EVCTRL_TCEI_Pos /* TC Event Input: disabled */
+	//		 | 0 << TC_EVCTRL_TCINV_Pos /* TC Inverted Event Input: disabled */
+	//		 | 0); /* Event Action: 0 */
 
-	hri_tc_write_EVCTRL_reg(
-	    TC4,
-	    1 << TC_EVCTRL_MCEO0_Pos       /* Match or Capture Channel 0 Event Output Enable: enabled */
-	        | 0 << TC_EVCTRL_MCEO1_Pos /* Match or Capture Channel 1 Event Output Enable: disabled */
-	        | 1 << TC_EVCTRL_OVFEO_Pos /* Overflow/Underflow Event Output Enable: enabled */
-	        | 0 << TC_EVCTRL_TCEI_Pos  /* TC Event Input: disabled */
-	        | 0 << TC_EVCTRL_TCINV_Pos /* TC Inverted Event Input: disabled */
-	        | 0);                      /* Event Action: 0 */
-
-	// hri_tc_write_INTEN_reg(TC4,0 << TC_INTENSET_MC0_Pos /* Match or Capture Channel 0 Interrupt Enable: disabled */
-	//		 | 0 << TC_INTENSET_MC1_Pos /* Match or Capture Channel 1 Interrupt Enable: disabled */
-	//		 | 0 << TC_INTENSET_SYNCRDY_Pos /* Synchronization Ready Interrupt Enable: disabled */
-	//		 | 0 << TC_INTENSET_ERR_Pos /* Error Interrupt Enable: disabled */
-	//		 | 0 << TC_INTENSET_OVF_Pos); /* Overflow Interrupt enable: disabled */
+	hri_tc_write_INTEN_reg(TC4,
+	                       0 << TC_INTENSET_MC0_Pos       /* Match or Capture Channel 0 Interrupt Enable: disabled */
+	                           | 0 << TC_INTENSET_MC1_Pos /* Match or Capture Channel 1 Interrupt Enable: disabled */
+	                           | 0 << TC_INTENSET_SYNCRDY_Pos /* Synchronization Ready Interrupt Enable: disabled */
+	                           | 0 << TC_INTENSET_ERR_Pos     /* Error Interrupt Enable: disabled */
+	                           | 1 << TC_INTENSET_OVF_Pos);   /* Overflow Interrupt enable: enabled */
 
 	hri_tc_write_CTRLA_ENABLE_bit(TC4, 1 << TC_CTRLA_ENABLE_Pos); /* Enable: enabled */
 
@@ -161,7 +157,7 @@ int8_t greenPWM_init()
 /**
  * \brief Initialize TC interface
  */
-int8_t bluePWM_init()
+int8_t blueAction_init()
 {
 
 	hri_tc_wait_for_sync(TC5);
@@ -176,8 +172,8 @@ int8_t bluePWM_init()
 	                       0 << TC_CTRLA_PRESCSYNC_Pos       /* Prescaler and Counter Synchronization: 0 */
 	                           | 0 << TC_CTRLA_RUNSTDBY_Pos  /* Run in Standby: disabled */
 	                           | 0 << TC_CTRLA_PRESCALER_Pos /* Setting: 0 */
-	                           | 0 << TC_CTRLA_WAVEGEN_Pos   /* Waveform Generation Operation: 0 */
-	                           | 0x1 << TC_CTRLA_MODE_Pos);  /* Operating Mode: 0x1 */
+	                           | 1 << TC_CTRLA_WAVEGEN_Pos   /* Waveform Generation Operation: 1 */
+	                           | 0x0 << TC_CTRLA_MODE_Pos);  /* Operating Mode: 0x0 */
 
 	// hri_tc_write_CTRLB_reg(TC5,0 << TC_CTRLBSET_CMD_Pos /* Command: 0 */
 	//		 | 0 << TC_CTRLBSET_ONESHOT_Pos /* One-Shot: disabled */
@@ -192,28 +188,26 @@ int8_t bluePWM_init()
 
 	// hri_tc_write_DBGCTRL_reg(TC5,0); /* Run in debug: 0 */
 
-	// hri_tccount8_write_CC_reg(TC5, 0 ,0x0); /* Compare/Capture Value: 0x0 */
+	// hri_tccount16_write_CC_reg(TC5, 0 ,0x0); /* Compare/Capture Value: 0x0 */
 
-	// hri_tccount8_write_CC_reg(TC5, 1 ,0x0); /* Compare/Capture Value: 0x0 */
+	// hri_tccount16_write_CC_reg(TC5, 1 ,0x0); /* Compare/Capture Value: 0x0 */
 
-	// hri_tccount8_write_COUNT_reg(TC5,0x0); /* Counter Value: 0x0 */
+	// hri_tccount16_write_COUNT_reg(TC5,0x0); /* Counter Value: 0x0 */
 
-	// hri_tc_write_PER_reg(TC5,0x0); /*  Period Value: 0x0 */
+	// hri_tc_write_EVCTRL_reg(TC5,0 << TC_EVCTRL_MCEO0_Pos /* Match or Capture Channel 0 Event Output Enable: disabled
+	// */
+	//		 | 0 << TC_EVCTRL_MCEO1_Pos /* Match or Capture Channel 1 Event Output Enable: disabled */
+	//		 | 0 << TC_EVCTRL_OVFEO_Pos /* Overflow/Underflow Event Output Enable: disabled */
+	//		 | 0 << TC_EVCTRL_TCEI_Pos /* TC Event Input: disabled */
+	//		 | 0 << TC_EVCTRL_TCINV_Pos /* TC Inverted Event Input: disabled */
+	//		 | 0); /* Event Action: 0 */
 
-	hri_tc_write_EVCTRL_reg(
-	    TC5,
-	    1 << TC_EVCTRL_MCEO0_Pos       /* Match or Capture Channel 0 Event Output Enable: enabled */
-	        | 0 << TC_EVCTRL_MCEO1_Pos /* Match or Capture Channel 1 Event Output Enable: disabled */
-	        | 1 << TC_EVCTRL_OVFEO_Pos /* Overflow/Underflow Event Output Enable: enabled */
-	        | 0 << TC_EVCTRL_TCEI_Pos  /* TC Event Input: disabled */
-	        | 0 << TC_EVCTRL_TCINV_Pos /* TC Inverted Event Input: disabled */
-	        | 0);                      /* Event Action: 0 */
-
-	// hri_tc_write_INTEN_reg(TC5,0 << TC_INTENSET_MC0_Pos /* Match or Capture Channel 0 Interrupt Enable: disabled */
-	//		 | 0 << TC_INTENSET_MC1_Pos /* Match or Capture Channel 1 Interrupt Enable: disabled */
-	//		 | 0 << TC_INTENSET_SYNCRDY_Pos /* Synchronization Ready Interrupt Enable: disabled */
-	//		 | 0 << TC_INTENSET_ERR_Pos /* Error Interrupt Enable: disabled */
-	//		 | 0 << TC_INTENSET_OVF_Pos); /* Overflow Interrupt enable: disabled */
+	hri_tc_write_INTEN_reg(TC5,
+	                       0 << TC_INTENSET_MC0_Pos       /* Match or Capture Channel 0 Interrupt Enable: disabled */
+	                           | 0 << TC_INTENSET_MC1_Pos /* Match or Capture Channel 1 Interrupt Enable: disabled */
+	                           | 0 << TC_INTENSET_SYNCRDY_Pos /* Synchronization Ready Interrupt Enable: disabled */
+	                           | 0 << TC_INTENSET_ERR_Pos     /* Error Interrupt Enable: disabled */
+	                           | 1 << TC_INTENSET_OVF_Pos);   /* Overflow Interrupt enable: enabled */
 
 	hri_tc_write_CTRLA_ENABLE_bit(TC5, 1 << TC_CTRLA_ENABLE_Pos); /* Enable: enabled */
 
