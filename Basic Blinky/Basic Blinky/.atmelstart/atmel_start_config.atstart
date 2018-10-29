@@ -784,7 +784,7 @@ drivers:
       name: TCC0/WO/1
       label: WO/1
     - identifier: pwmTimer:WO/2
-      pad: PA10
+      pad: PA18
       mode: PWM output
       configuration: null
       definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::optional_signal_definition::TCC0.WO.2
@@ -811,10 +811,10 @@ pads:
     mode: Peripheral IO
     user_label: PA05
     configuration: null
-  PA10:
-    name: PA10
-    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::pad::PA10
+  PA18:
+    name: PA18
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21G18A-AF::pad::PA18
     mode: Peripheral IO
-    user_label: PA10
+    user_label: PA18
     configuration: null
 toolchain_options: []

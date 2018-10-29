@@ -38,7 +38,7 @@ void pwmTimer_PORT_init(void)
 
 	gpio_set_pin_function(PA05, PINMUX_PA05E_TCC0_WO1);
 
-	gpio_set_pin_function(PA10, PINMUX_PA10F_TCC0_WO2);
+	gpio_set_pin_function(PA18, PINMUX_PA18F_TCC0_WO2);
 }
 
 void pwmTimer_CLOCK_init(void)

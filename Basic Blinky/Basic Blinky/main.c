@@ -113,6 +113,8 @@ int main(void)
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 	
+	TCC2->STATUS.reg |= TCC_CTRLBSET_CMD_STOP;
+	
 	NVIC_DisableIRQ(TC3_IRQn);
 	NVIC_DisableIRQ(TC4_IRQn);
 	NVIC_DisableIRQ(TC5_IRQn);
@@ -364,12 +366,13 @@ void EIC_Handler()
 		{
 			delay_ms(250);
 			TCC2->CTRLBSET.reg = TCC_CTRLBSET_CMD_RETRIGGER;
+			PORTA.OUTTGL.reg |= 1 << 12;
 		}
 		else
 		{
 			delay_ms(1000);
 
-			if (TCC2->COUNT.reg == 0)
+	//		if (TCC2->COUNT.reg != 0)
 				PORTA.OUT.reg &= ~(1 << 12);
 				
 			TCC2->CTRLBSET.reg = TCC_CTRLBSET_CMD_STOP;

@@ -97,9 +97,9 @@
           <AcmeProjectActionInfo Action="File" Source="hri/hri_usb_d21.h" IsConfig="false" Hash="agq0gHuv5nfZ5aG2fOCQwA" />
           <AcmeProjectActionInfo Action="File" Source="hri/hri_wdt_d21.h" IsConfig="false" Hash="7CgqpyY1y0K0MWo9DkOrlQ" />
           <AcmeProjectActionInfo Action="File" Source="main.c" IsConfig="false" Hash="k0AH7j+BrmdFhBPzCCMptA" />
-          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="B3vW2PpIL0oRnMqvgJ37Yw" />
+          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="rwHSzeQo6dvmcqwqJ9BOJQ" />
           <AcmeProjectActionInfo Action="File" Source="driver_init.h" IsConfig="false" Hash="EZ601dsHHzGL0nWg0cruMA" />
-          <AcmeProjectActionInfo Action="File" Source="atmel_start_pins.h" IsConfig="false" Hash="wupuzvW+XYSBx4W5A1FQ0w" />
+          <AcmeProjectActionInfo Action="File" Source="atmel_start_pins.h" IsConfig="false" Hash="0Pii4CZe9ZtOMeIKZzVNiA" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.h" IsConfig="false" Hash="FVtUMrZTRgYfz8skp36UUw" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.c" IsConfig="false" Hash="ktkB/D+YINGKHPIQ5kckOQ" />
           <AcmeProjectActionInfo Action="File" Source="hal/include/hpl_missing_features.h" IsConfig="false" Hash="XsAvpgfutzkw0Y5SydYFaw" />
@@ -343,7 +343,7 @@
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
 </ArmGcc>
     </ToolchainSettings>
-    <PostBuildEvent>C:\Users\techi\AppData\Local\Arduino15\packages\arduino\tools\bossac\1.7.0/bossac -i -d --port=COM11 -U true -i -e -w -v "C:\Users\techi\Documents\Senior Project Repo\uLED\Basic Blinky\Basic Blinky\Debug\Basic Blinky.bin" -R</PostBuildEvent>
+    <PostBuildEvent>C:\Users\techi\AppData\Local\Arduino15\packages\arduino\tools\bossac\1.7.0/bossac -i -d --port=COM12 -U true -i -e -w -v "C:\Users\techi\Documents\Senior Project Repo\uLED\Basic Blinky\Basic Blinky\Debug\Basic Blinky.bin" -R</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="atmel_start.c">
