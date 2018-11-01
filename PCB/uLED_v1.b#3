@@ -964,9 +964,9 @@ design rules under a new name.
 <via x="35.941" y="20.828" extent="1-16" drill="0.55"/>
 <wire x1="36.9705" y1="22.098" x2="35.941" y2="21.0685" width="0.3048" layer="1"/>
 <wire x1="35.941" y1="21.0685" x2="35.941" y2="20.828" width="0.3048" layer="1"/>
-<wire x1="35.941" y1="20.828" x2="37.465" y2="22.352" width="0.508" layer="16"/>
 <contactref element="U$3" pad="1"/>
-<wire x1="37.465" y1="22.352" x2="37.592" y2="24.203" width="0" layer="19" extent="16-16"/>
+<wire x1="35.941" y1="20.828" x2="37.592" y2="22.479" width="0.508" layer="16"/>
+<wire x1="37.592" y1="22.479" x2="37.592" y2="24.203" width="0.508" layer="16"/>
 </signal>
 <signal name="3.3V">
 <contactref element="C8" pad="1"/>
