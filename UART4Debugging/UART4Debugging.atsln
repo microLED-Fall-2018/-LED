@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Atmel Studio Solution File, Format Version 11.00
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "USART4Debugging", "UART4Debugging\USART4Debugging.cproj", "{BD26ADA2-A479-4ED4-A495-07BCB63D2C43}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Release|ARM = Release|ARM
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD26ADA2-A479-4ED4-A495-07BCB63D2C43}.Debug|ARM.ActiveCfg = Debug|ARM
+		{BD26ADA2-A479-4ED4-A495-07BCB63D2C43}.Debug|ARM.Build.0 = Debug|ARM
+		{BD26ADA2-A479-4ED4-A495-07BCB63D2C43}.Release|ARM.ActiveCfg = Release|ARM
+		{BD26ADA2-A479-4ED4-A495-07BCB63D2C43}.Release|ARM.Build.0 = Release|ARM
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
