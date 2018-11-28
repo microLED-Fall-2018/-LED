@@ -793,8 +793,8 @@ Note, that not all DRC settings must be set by the manufacturer. Several can be 
 <attribute name="SF_SKU" value="PRT-10592" x="48.26" y="24.13" size="1.778" layer="28" rot="MR0" display="off"/>
 <attribute name="VALUE" x="48.26" y="19.177" size="0.6096" layer="28" font="vector" ratio="20" rot="MR180" align="top-center"/>
 </element>
-<element name="J2" library="SparkFun-Connectors" package="1X01" value="" x="42.164" y="27.559">
-<attribute name="VALUE" x="40.894" y="26.035" size="0.6096" layer="27" font="vector" ratio="20" align="top-left"/>
+<element name="J2" library="SparkFun-Connectors" package="1X01" value="" x="40.64" y="27.559">
+<attribute name="VALUE" x="39.37" y="26.035" size="0.6096" layer="27" font="vector" ratio="20" align="top-left"/>
 </element>
 <element name="J3" library="SparkFun-Connectors" package="1X01" value="" x="41.529" y="19.177">
 <attribute name="VALUE" x="40.259" y="17.653" size="0.6096" layer="27" font="vector" ratio="20" align="top-left"/>
@@ -1012,7 +1012,7 @@ Note, that not all DRC settings must be set by the manufacturer. Several can be 
 <wire x1="53.34" y1="25.13995" x2="53.34" y2="27.112" width="0.3048" layer="1"/>
 <contactref element="J6" pad="1"/>
 <wire x1="49.462" y1="16.603734375" x2="49.462" y2="19.05" width="0.508" layer="16"/>
-<wire x1="49.462" y1="16.603734375" x2="48.133" y2="15.494" width="0.508" layer="16"/>
+<wire x1="49.462" y1="16.603734375" x2="48.133" y2="15.494" width="0.3048" layer="16"/>
 <wire x1="54.29" y1="18.7659" x2="55.3419" y2="18.7659" width="0.508" layer="1"/>
 <wire x1="55.372" y1="18.796" x2="55.3419" y2="18.7659" width="0.508" layer="1"/>
 <wire x1="55.372" y1="18.796" x2="55.372" y2="20.955" width="0.508" layer="1"/>

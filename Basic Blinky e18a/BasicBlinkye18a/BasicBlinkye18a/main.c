@@ -73,7 +73,7 @@ uint8_t beatsCurr = 0;
 // Storage for flash sequences
 // There are up to 10 sequences which can be 200 instructions long each
 instruction sequences[MAXSEQ][MAXINST];
-uint8_t sequenceCurr = 0;
+uint8_t sequenceCurr;
 	
 instTracker tracker[3]; // Tracks the instructions for each color
 uint8_t maxIntensity[3];
@@ -82,14 +82,17 @@ uint16_t nextAction[3]; // the count the next action should occur on. Should wra
 uint16_t diffs[3]; // increase over current count for next action
 uint16_t countMax;
 uint8_t increment[3];
-uint8_t direction;
+uint8_t direction[3];
+uint32_t timeDiffs;
+uint8_t presses;
+uint8_t modeNum;
 
 uint8_t beatsRemaining[3] = {0, 0, 0};
 uint16_t actionsRemaining[3] = {0, 0,0};
 uint8_t isOn[3] = {0, 0, 0}; // For sequences, is the instruction currently on?
 
 void populateTracker(instruction[]);
-void updateStepsPerBeat(uint8_t);
+void updateStepsPerBeat(uint16_t);
 void processInstruction(instruction);
 void nextInstruction(uint8_t);
 void flash(uint8_t);
@@ -103,6 +106,9 @@ void (*modeZero)();
 void incSequence();
 void recordBPM();
 void modeReport(uint8_t);
+void loadSequence();
+void resetTC_Counts();
+void replaceSequence(uint8_t, instruction*);
 
 int main(void)
 {
@@ -129,27 +135,40 @@ int main(void)
 	NVIC_EnableIRQ(EIC_IRQn);
 	NVIC_SetPriority(EIC_IRQn, 3);
 	
-	// For testing, instantiate sequence 0 with short Demo
-	int i;
-	for (i = 0; i < 200; i++)
-		sequences[sequenceCurr][i] = shortDemo[i];
+	replaceSequence(0, testSeq0);
+	replaceSequence(1, testSeq1);
+	replaceSequence(2, testSeq2);
+	replaceSequence(3, testSeq3);
+	replaceSequence(4, testSeq4);
+	replaceSequence(5, testSeq5);
+	replaceSequence(6, testSeq6);
+	replaceSequence(7, testSeq7);
+	replaceSequence(8, testSeq8);
+	replaceSequence(9, testSeq9);
+	
+	
+/*	memcpy(sequences[0], testSeq0, 200);
+	memcpy(sequences[1], testSeq1, 200);
+	memcpy(sequences[2], testSeq2, 200);
+	memcpy(sequences[3], testSeq3, 200);
+	memcpy(sequences[4], testSeq4, 200);
+	memcpy(sequences[5], testSeq5, 200);
+	memcpy(sequences[6], testSeq6, 200);
+	memcpy(sequences[7], testSeq7, 200);
+	memcpy(sequences[8], testSeq8, 200);
+	memcpy(sequences[9], testSeq9, 200);*/
 		
 	PORTA.DIR.reg |= 1 << 2;
-	PORTA.OUT.reg |= 1 << 2;
-	
-	updateStepsPerBeat(bpm);
-	
+	PORTA.OUT.reg |= 1 << 2;	
 	TCC0->PER.reg = 255;
 	TCC0->WAVE.reg |= TCC_WAVE_WAVEGEN_NPWM | 0x7 << 16;
 	
-	populateTracker(sequences[sequenceCurr]);
-	tracker[RED].curr = tracker[RED].first;
-	tracker[GREEN].curr = tracker[GREEN].first;
-	tracker[BLUE].curr = tracker[BLUE].first;
+	updateStepsPerBeat(stepsPerBeatTable[bpm]);
+
+	sequenceCurr = 0;
 	
-	processInstruction(sequences[sequenceCurr][tracker[RED].curr]);	
-	processInstruction(sequences[sequenceCurr][tracker[GREEN].curr]);
-	processInstruction(sequences[sequenceCurr][tracker[BLUE].curr]);
+	loadSequence();
+
 	
 	NVIC_EnableIRQ(TC3_IRQn);
 	NVIC_EnableIRQ(TC4_IRQn);
@@ -166,29 +185,19 @@ int main(void)
 		delay_ms(500);
 		changeDSColor(&dsColors[dsBLUE]);
 		delay_ms(500);
-		
-		/*
-		char number[17];
-		
-		hri_tc_write_READREQ_reg(TC3, TC_READREQ_RREQ | TC_READREQ_ADDR(TC_COUNT16_COUNT_OFFSET));
-		hri_tc_write_READREQ_reg(TC3, TC_READREQ_RREQ | TC_READREQ_ADDR(0x18));
-			
-			while (TC3->COUNT32.STATUS.bit.SYNCBUSY) 
-			{
-				//serialWriteString("Holding\r\n");
-			}
-			
-		uint16_t num = 	hri_tccount16_read_COUNT_reg(TC3);
-		utoa(num, number, 10);
-	
-		serialWriteString(number);
-		serialWriteString("\n\r");
-		char perString[20] = "CC0: ";
-		strcat(strcat(perString, utoa(TC3->COUNT16.CC[0].reg, number, 10)), "\r\n");
-		serialWriteString(perString);
-		
-		delay_ms(500);*/
 	}
+}
+
+void loadSequence()
+{
+	populateTracker(sequences[sequenceCurr]);
+	tracker[RED].curr = tracker[RED].first;
+	tracker[GREEN].curr = tracker[GREEN].first;
+	tracker[BLUE].curr = tracker[BLUE].first;
+	
+	processInstruction(sequences[sequenceCurr][tracker[RED].curr]);
+	processInstruction(sequences[sequenceCurr][tracker[GREEN].curr]);
+	processInstruction(sequences[sequenceCurr][tracker[BLUE].curr]);
 }
 
 /*
@@ -220,9 +229,9 @@ void populateTracker(instruction insts[200])
 	}
 }
 
-void updateStepsPerBeat(uint8_t bpm)
+void updateStepsPerBeat(uint16_t counts)
 {
-	stepsPerBeat = stepsPerBeatTable[bpm - 1];
+	stepsPerBeat = counts;
 }
 
 // Processing an Instruction
@@ -247,9 +256,9 @@ void processInstruction(instruction inst)
 		increment[color] = inst.bright >> 4;
 		maxIntensity[color] = increment[color] << 4;
 		currIntensity[color] = 0;
-		actionsRemaining[color] = (inst.dur * inst.rate) << 5; // x16x2 = x32 = << 5
+		actionsRemaining[color] = (inst.dur * inst.rate) << 5; 
 		diffs[color] = (stepsPerBeat / inst.rate) >> 5;
-		direction = 1;
+		direction[color] = 1;
 		action[color] = &fade;
 	}
 	else if(whatKind == RAMPUP)
@@ -257,7 +266,7 @@ void processInstruction(instruction inst)
 		increment[color] = inst.bright >> 4;
 		maxIntensity[color] = increment[color] << 4;
 		currIntensity[color] = 0;
-		actionsRemaining[color] = (inst.dur * inst.rate) << 4; // x16x2 = x32 = << 5
+		actionsRemaining[color] = (inst.dur * inst.rate) << 4; 
 		diffs[color] = (stepsPerBeat / inst.rate) >> 4;
 		action[color] = &rampUp;
 	}
@@ -266,7 +275,7 @@ void processInstruction(instruction inst)
 		increment[color] = inst.bright >> 4;
 		maxIntensity[color] = increment[color] << 4;
 		currIntensity[color] = maxIntensity[color];
-		actionsRemaining[color] = (inst.dur * inst.rate) << 4; // x16x2 = x32 = << 5
+		actionsRemaining[color] = (inst.dur * inst.rate) << 4;
 		diffs[color] = (stepsPerBeat / inst.rate) >> 4;
 		action[color] = &rampDown;
 	}
@@ -290,11 +299,11 @@ void fade(uint8_t color)
 	// If we hit the max intensity or zero, change direction
 	// Otherwise direction stays the same.
 	if (currIntensity[color] >= maxIntensity[color])
-		direction = 0; // falling
+		direction[color] = 0; // falling
 	else if (currIntensity[color] <= 0)
-		direction = 1; // rising	
+		direction[color] = 1; // rising	
 		
-	if (direction != 0)
+	if (direction[color] != 0)
 		currIntensity[color] += increment[color];
 	else
 		currIntensity[color] -= increment[color];
@@ -332,8 +341,8 @@ void nextInstruction(uint8_t color)
 
 void TC3_Handler()
 {	
-	if (TC3->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF)
-	{	
+	if (TC3->COUNT16.INTFLAG.reg & TC_INTFLAG_OVF)
+	{		
 		action[RED](RED);
 		if (--actionsRemaining[RED] <= 0)
 		{			
@@ -347,7 +356,7 @@ void TC3_Handler()
 
 void TC4_Handler()
 {
-	if (TC4->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF)
+	if (TC4->COUNT16.INTFLAG.reg & TC_INTFLAG_OVF)
 	{
 		action[GREEN](GREEN);
 		if (--actionsRemaining[GREEN] <= 0)
@@ -361,7 +370,7 @@ void TC4_Handler()
 
 void TC5_Handler()
 {
-	if (TC5->COUNT8.INTFLAG.reg & TC_INTFLAG_OVF)
+	if (TC5->COUNT16.INTFLAG.reg & TC_INTFLAG_OVF)
 	{
 		action[BLUE](BLUE);
 		if (--actionsRemaining[BLUE] <= 0)
@@ -411,7 +420,7 @@ void EIC_Handler()
 			delay_ms(1);
 		}
 		
-		delay_ms(50);
+		delay_ms(10);
 		
 		switch(tracker)
 		{
@@ -465,9 +474,10 @@ void testByColor(uint8_t color, uint8_t val)
 	}
 }
 
-void changeMode(uint8_t modeNum)
+void changeMode(uint8_t mode)
 {
-	switch(modeNum)
+	
+	switch(mode)
 	{
 		case 1:
 			{
@@ -480,6 +490,10 @@ void changeMode(uint8_t modeNum)
 				processInstruction(sequences[sequenceCurr][tracker[BLUE].curr]);
 				
 				modeZero = &incSequence; 
+				
+				// Reset all counts to zero
+				resetTC_Counts();
+
 				break;
 			}
 		case 2:
@@ -491,50 +505,87 @@ void changeMode(uint8_t modeNum)
 				TC3->COUNT16.CC[0].reg = 0 - 1;
 				
 				modeZero = &recordBPM;
+				timeDiffs = 0;
+				presses = 0;
 				break;
 			}
 		default:
 			break;			
 	}
+	modeNum = mode;
 	
 	modeReport(modeNum);
 }
 
 void incSequence()
-{
+{		
+	if (++sequenceCurr == MAXSEQ)
+		sequenceCurr = 0;
+
+	loadSequence();
+	resetTC_Counts();
+	
+	char sequenceNum[3];
+	char words[100] = "Changing to sequence ";
+	
+	utoa(sequenceCurr, sequenceNum, 10);
+//	serialWriteString(strcat(strcat("Changing to sequence ", sequenceNum), ".\0"));
+	serialWriteString(strcat(words, sequenceNum));
+	serialWriteString("\r\n");
+
+
 	return;
 }
 
 void recordBPM()
 {
+	presses += 1;
 	// grab current count of TC3
-	TC3->COUNT16.READREQ.reg = TC_READREQ_RREQ | TC_READREQ_ADDR(0x10);
-	while(TC3->COUNT16.STATUS.bit.SYNCBUSY) {}
-	uint16_t countVal = TC3->COUNT16.COUNT.reg;
-	TC3->COUNT16.COUNT.reg = 0;
+	if (presses == 1) // Just reset the counter to 0.
+	{
+		TC3->COUNT16.COUNT.reg = 0;
+	}
+	else if (presses < 5) // Store the count value, and reset to 0.
+	{
+		TC3->COUNT16.READREQ.reg = TC_READREQ_RREQ | TC_READREQ_ADDR(0x10);
+		while(TC3->COUNT16.STATUS.bit.SYNCBUSY) {}
+		timeDiffs += TC3->COUNT16.COUNT.reg;
+		TC3->COUNT16.COUNT.reg = 0;
+	}
+	else // Store value, and process
+	{
+		TC3->COUNT16.READREQ.reg = TC_READREQ_RREQ | TC_READREQ_ADDR(0x10);
+		while(TC3->COUNT16.STATUS.bit.SYNCBUSY) {}
+		timeDiffs += TC3->COUNT16.COUNT.reg;	
+		
+		updateStepsPerBeat(timeDiffs >> 2);
+		changeMode(1);
+	}	
 	
-	char thing[12];
-	char words[30] = "Count Value: ";
-	strcat(strcat(words, utoa(countVal, thing, 10)), "\r\n");
-	serialWriteString(words);
-	
-	// reset TC3 count to 0
-	// If have four counts, update BPM to match count.
 	return;
+}
+
+void resetTC_Counts()
+{
+	TC3->COUNT16.COUNT.reg = 0;
+	TC4->COUNT16.COUNT.reg = 0;
+	TC5->COUNT16.COUNT.reg = 0;
 }
 
 void modeReport(uint8_t mode)
 {
 	char modeString[30] = "Changing to mode: ";
-	char cc0_String[20] = "tc3 CC0: ";
 	char number[10];
 	
 	TC3->COUNT16.READREQ.reg = TC_READREQ_RREQ | TC_READREQ_ADDR(0x18);
 	while(TC3->COUNT16.STATUS.bit.SYNCBUSY) {}
 	
 	strcat(strcat(modeString, utoa(mode, number, 10)), "\r\n");
-	strcat(strcat(cc0_String, utoa(TC3->COUNT16.CC[0].reg, number, 10)), "\r\n");
 	
 	serialWriteString(modeString);
-	serialWriteString(cc0_String);
+}
+
+void replaceSequence(uint8_t oldSeq, instruction *newSeq)
+{
+		memcpy(sequences[oldSeq], newSeq, 200);
 }

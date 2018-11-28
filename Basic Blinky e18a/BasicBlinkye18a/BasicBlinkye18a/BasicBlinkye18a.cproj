@@ -407,7 +407,7 @@
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
 </ArmGcc>
     </ToolchainSettings>
-    <PostBuildEvent>C:\Users\techi\AppData\Local\Arduino15\packages\arduino\tools\bossac\1.7.0/bossac -i -d --port=COM24 -U true -i -e -w -v "C:\Users\techi\Documents\Senior Project Repo\uLED\Basic Blinky e18a\BasicBlinkye18a\BasicBlinkye18a\Debug\BasicBlinkye18a.bin" -R</PostBuildEvent>
+    <PostBuildEvent>C:\Users\techi\AppData\Local\Arduino15\packages\arduino\tools\bossac\1.7.0/bossac -i -d --port=COM25 -U true -i -e -w -v "C:\Users\techi\Documents\Senior Project Repo\uLED\Basic Blinky e18a\BasicBlinkye18a\BasicBlinkye18a\Debug\BasicBlinkye18a.bin" -R</PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="atmel_start.c">
