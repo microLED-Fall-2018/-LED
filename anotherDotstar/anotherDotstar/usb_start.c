@@ -42,7 +42,7 @@ static uint8_t ctrl_buffer[64];
  */
 static bool usb_device_cb_bulk_out(const uint8_t ep, const enum usb_xfer_code rc, const uint32_t count)
 {
-	//cdcdf_acm_write((uint8_t *)usbd_cdc_buffer, count);
+	cdcdf_acm_write((uint8_t *)usbd_cdc_buffer, count);
 
 	/* No error. */
 	return false;
@@ -54,8 +54,8 @@ static bool usb_device_cb_bulk_out(const uint8_t ep, const enum usb_xfer_code rc
 static bool usb_device_cb_bulk_in(const uint8_t ep, const enum usb_xfer_code rc, const uint32_t count)
 {
 	/* Echo data. */
-	//cdcdf_acm_read((uint8_t *)usbd_cdc_buffer, count);
-		
+	cdcdf_acm_read((uint8_t *)usbd_cdc_buffer, sizeof(usbd_cdc_buffer));
+
 	/* No error. */
 	return false;
 }
@@ -67,11 +67,10 @@ static bool usb_device_cb_state_c(usb_cdc_control_signal_t state)
 {
 	if (state.rs232.DTR) {
 		/* Callbacks must be registered after endpoint allocation */
-		//cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)usb_device_cb_bulk_out);
-		//cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in);
+		cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)usb_device_cb_bulk_out);
+		cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in);
 		/* Start Rx */
 		cdcdf_acm_read((uint8_t *)usbd_cdc_buffer, sizeof(usbd_cdc_buffer));
-
 	}
 
 	/* No error. */
@@ -111,7 +110,6 @@ void cdcd_acm_example(void)
 
 	cdcdf_acm_register_callback(CDCDF_ACM_CB_STATE_C, (FUNC_PTR)usb_device_cb_state_c);
 
-	//while (1) {}
 }
 
 void usb_init(void)

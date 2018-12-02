@@ -2147,6 +2147,8 @@ TRI-COLOR LED</description>
 <sheets>
 <sheet>
 <plain>
+<text x="184.15" y="41.91" size="1.778" layer="91">TODO: Attach AIN and TIMX to each of the diodes</text>
+<text x="191.77" y="38.1" size="1.778" layer="91">Import parts</text>
 </plain>
 <instances>
 <instance part="IC1" gate="G$1" x="87.63" y="43.18">

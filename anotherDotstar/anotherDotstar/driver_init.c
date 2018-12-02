@@ -13,7 +13,33 @@
 #include <hpl_gclk_base.h>
 #include <hpl_pm_base.h>
 
+#include <hpl_adc_base.h>
+
 struct spi_m_sync_descriptor SPI_0;
+
+struct adc_sync_descriptor ADC_0;
+
+void ADC_0_PORT_init(void)
+{
+
+	// Disable digital pin circuitry
+	gpio_set_pin_direction(PA06, GPIO_DIRECTION_OFF);
+
+	gpio_set_pin_function(PA06, PINMUX_PA06B_ADC_AIN6);
+}
+
+void ADC_0_CLOCK_init(void)
+{
+	_pm_enable_bus_clock(PM_BUS_APBC, ADC);
+	_gclk_enable_channel(ADC_GCLK_ID, CONF_GCLK_ADC_SRC);
+}
+
+void ADC_0_init(void)
+{
+	ADC_0_CLOCK_init();
+	ADC_0_PORT_init();
+	adc_sync_init(&ADC_0, ADC, (void *)NULL);
+}
 
 void SPI_0_PORT_init(void)
 {
@@ -175,6 +201,8 @@ void USB_DEVICE_INSTANCE_init(void)
 void system_init(void)
 {
 	init_mcu();
+
+	ADC_0_init();
 
 	SPI_0_init();
 

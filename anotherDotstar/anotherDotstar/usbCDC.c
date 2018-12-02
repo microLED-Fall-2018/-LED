@@ -19,6 +19,5 @@ void serialWriteString(char string[])
 		i++;
 	}
 	
-	//cdcdf_acm_write((uint8_t *)usbd_cdc_buffer, count); // example
 	cdcdf_acm_write((uint8_t*)newString, length);
 }

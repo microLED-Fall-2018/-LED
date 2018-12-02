@@ -58,6 +58,7 @@ int main(void)
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 	cdcd_acm_example();
+
 	
 	cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)cdcChangeColor);
 
@@ -65,31 +66,35 @@ int main(void)
 	//cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)cdcChangeColor);
 	
 	buildColors();
+	changeDSColor(&dsColors[BLACK]);
 	
 	PORT->Group[0].DIR.reg &= ~(1 << 9);
 	PORT->Group[0].PINCFG[9].reg |= PORT_PINCFG_INEN | PORT_PINCFG_PULLEN | PORT_PINCFG_PMUXEN;
 	PORT->Group[0].OUT.reg &= ~(1 << 9);
 	
 	REG_GCLK_CLKCTRL = GCLK_CLKCTRL_ID_EIC | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_CLKEN;
-	REG_PM_APBAMASK |= PM_APBAMASK_EIC;
+	REG_PM_APBAMASK  |= PM_APBAMASK_EIC;	
 	EIC->INTENSET.reg	= EIC_INTENSET_EXTINT9;
 	EIC->CONFIG[1].reg 	|=  EIC_CONFIG_FILTEN1 | EIC_CONFIG_SENSE1_RISE;
 	EIC->CTRL.reg |= EIC_CTRL_ENABLE;
 	
 	NVIC_EnableIRQ(EIC_IRQn);
 	NVIC_SetPriority(EIC_IRQn, 9);
-
-	changeDSColor(&dsColors[BLACK]);
+	
+	adc_sync_enable_channel(&ADC_0, 6);
 	
 	while (1)
 	{	
-		delay_ms(1000);
-		//serialWriteString("Ready to go!\r\n");
-		serialWriteString("1");
+		uint8_t buffer[1];
+		
+		char number[6];
+		adc_sync_read_channel(&ADC_0, 6, buffer, 2);
+		
+		utoa(buffer[0], number, 10);
+		serialWriteString(strcat(number,"\r\n\0"));
+		
 		PORT->Group[0].OUTTGL.reg = 1 << 10;
-		delay_ms(1000);
-		serialWriteString("0");
-		//serialWriteString("This is a really really really long string, just look at it! This will surely test the mettle of the silly cdc wotsit!\r\n");
+		delay_ms(10);
 	}
 }
 

@@ -4,7 +4,7 @@ versions:
   api: '1.0'
   backend: 1.4.93
   commit: 9c29f8365cf76e9937d19b1e765a83bc7a80e4e9
-  content: 1.0.1231
+  content: 1.0.1255
   content_pack_name: acme-packs-all
   format: '2'
   frontend: 1.4.1787
@@ -83,6 +83,57 @@ middlewares:
       USB Device Stack Core Instance: USB_DEVICE_STACK_CORE_INSTANCE
       USB Class CDC: USB_CLASS_CDC
 drivers:
+  ADC_0:
+    user_label: ADC_0
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21E18A-AF::ADC::driver_config_definition::ADC::HAL:Driver:ADC.Sync
+    functionality: ADC
+    api: HAL:Driver:ADC_Sync
+    configuration:
+      adc_advanced_settings: false
+      adc_arch_adjres: 0
+      adc_arch_corren: false
+      adc_arch_dbgrun: false
+      adc_arch_event_settings: false
+      adc_arch_gain: 1x
+      adc_arch_gaincorr: 0
+      adc_arch_inputoffset: 0
+      adc_arch_inputscan: 0
+      adc_arch_leftadj: false
+      adc_arch_offsetcorr: 0
+      adc_arch_refcomp: false
+      adc_arch_resrdyeo: false
+      adc_arch_runstdby: false
+      adc_arch_samplen: 0
+      adc_arch_samplenum: 1 sample
+      adc_arch_startei: false
+      adc_arch_syncei: false
+      adc_arch_winlt: 0
+      adc_arch_winmode: No window mode
+      adc_arch_winmoneo: false
+      adc_arch_winut: 0
+      adc_differential_mode: false
+      adc_freerunning_mode: true
+      adc_pinmux_negative: Internal ground
+      adc_pinmux_positive: ADC AIN6 pin
+      adc_prescaler: Peripheral clock divided by 32
+      adc_reference: 1.0V voltage reference
+      adc_resolution: 8-bit
+    optional_signals:
+    - identifier: ADC_0:AIN/6
+      pad: PA06
+      mode: Enabled
+      configuration: null
+      definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21E18A-AF::optional_signal_definition::ADC.AIN.6
+      name: ADC/AIN/6
+      label: AIN/6
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: ADC
+          input: Generic clock generator 0
+        configuration:
+          adc_gclk_selection: Generic clock generator 0
   GCLK:
     user_label: GCLK
     definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21E18A-AF::GCLK::driver_config_definition::GCLK::HAL:HPL:GCLK
@@ -637,6 +688,12 @@ pads:
     definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21E18A-AF::pad::PA01
     mode: Digital output
     user_label: PA01
+    configuration: null
+  PA06:
+    name: PA06
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21E18A-AF::pad::PA06
+    mode: Analog
+    user_label: PA06
     configuration: null
   PA18:
     name: PA18

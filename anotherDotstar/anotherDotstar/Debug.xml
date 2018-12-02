@@ -17,6 +17,7 @@
       <Value>../examples</Value>
       <Value>../hal/include</Value>
       <Value>../hal/utils/include</Value>
+      <Value>../hpl/adc</Value>
       <Value>../hpl/core</Value>
       <Value>../hpl/dmac</Value>
       <Value>../hpl/gclk</Value>
@@ -59,6 +60,7 @@
       <Value>../examples</Value>
       <Value>../hal/include</Value>
       <Value>../hal/utils/include</Value>
+      <Value>../hpl/adc</Value>
       <Value>../hpl/core</Value>
       <Value>../hpl/dmac</Value>
       <Value>../hpl/gclk</Value>
@@ -84,6 +86,7 @@
       <Value>../examples</Value>
       <Value>../hal/include</Value>
       <Value>../hal/utils/include</Value>
+      <Value>../hpl/adc</Value>
       <Value>../hpl/core</Value>
       <Value>../hpl/dmac</Value>
       <Value>../hpl/gclk</Value>
