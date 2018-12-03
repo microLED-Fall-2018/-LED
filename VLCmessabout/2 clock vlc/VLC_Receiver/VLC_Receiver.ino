@@ -11,7 +11,7 @@ enum receiver_state state = IDLE ;
 
 //This defines receiver properties
 #define SENSOR_PIN A3
-#define SYMBOL_HZ 2000
+#define SYMBOL_HZ 10
 #define SAMPLE_PER_SYMBOL 1
 #define WORD_LENGTH 10 // a byte is encoded as a 10-bit value with start and stop bits
 #define ETX 0x00 // End of frame symbol
@@ -45,8 +45,8 @@ void setTimerFrequency(int frequencyHz) {
   // to prevent any jitter or disconnect when changing the compare value.
   TC->COUNT.reg = map(TC->COUNT.reg, 0, TC->CC[0].reg, 0, compareValue);
   TC->CC[0].reg = compareValue;
-  Serial.println(TC->COUNT.reg);
-  Serial.println(TC->CC[0].reg);
+  //Serial.println(TC->COUNT.reg);
+  //Serial.println(TC->CC[0].reg);
   while (TC->STATUS.bit.SYNCBUSY == 1);
 }
 
@@ -131,14 +131,15 @@ int sample_signal(){
   int sensorValue = readLED();
   int isBufferWord = 0;
   char byte_word;
-  
+
+  /*
   Serial.print("Read ");
   Serial.print(sensorValue);
   Serial.print(" upper ");
   Serial.print(upper);
   Serial.print(" lower ");
   Serial.print(lower);
-  
+  */
   if((sensorValue - upper) > DIF_THRESHOLD) upper = sensorValue;
   if((upper - sensorValue) > DIF_THRESHOLD) lower = sensorValue;
 
@@ -146,9 +147,14 @@ int sample_signal(){
   if((sensorValue - lower) < DIF_THRESHOLD && (lower - sensorValue) < DIF_THRESHOLD) read_val = 0;
   valid_read = (upper - lower) > DIF_THRESHOLD ? 1 : 0;
 
+  /*
+  Serial.print(" ");
+  Serial.println(read_val);
+  */
   // desync, reset
   // without this the program cannot gracefully recover from desyncs that involve lower and upper meeting
   if(((upper - lower) < DIF_THRESHOLD || read_val == -1) && (upper != 0 && lower != 0)) {
+    Serial.println("RESET TRIPPED");
     upper = 0;
     lower = 0;
     state = IDLE;
@@ -156,19 +162,19 @@ int sample_signal(){
     //clear buffer and set state as desynced
   } else { // valid read
     add_to_buffer(read_val);
+    Serial.println(int_buffer,BIN);
     isBufferWord = is_buffer_valid_word();
     if (isBufferWord == 1 && state == DATA) { // do something with data
+      Serial.println("DATA");
       str_buffer += (int_buffer >> 1) & BYTE_MASK; //right shift by 1 to remove start bit and get first 8 bits for byte data
     } else if (isBufferWord == 2) { // we are now synced and ready to receive data
+      Serial.println("SYNC");
       str_buffer = ""; // clear string buffer for new data
       state = DATA;
     } else if (isBufferWord == 3) { // store data
       state = IDLE;
-      Serial.println(str_buffer);
     }
   }
-  Serial.print(" ");
-  Serial.println(read_val);
   
   
 }
@@ -182,19 +188,23 @@ inline void add_to_buffer(unsigned int bit) {
 #define SYNC_SYMBOL 0b1000000001
 #define START_SYMBOL 0b1 // 10 high to low
 #define EXIT_SYMBOL 0b0  // 01 low to high
-#define ESDE_MASK ((EXIT_SYMBOL << 10) | (START_SYMBOL << 9) | EXIT_SYMBOL) //EXIT/START/8 bits DATA/EXIT
+#define ESDE_MASK ((START_SYMBOL << 10) | (EXIT_SYMBOL << 9) | START_SYMBOL) //START/EXIT/8 bits DATA/START
+                                                                             //  1  / 0  / ZZZZZZZZ  / 1
 #define STOP_SYMBOL 0b0111111110
+#define WORD_MASK 0b1111111111
 inline int is_buffer_valid_word() {
-  if((int_buffer & ESDE_MASK) == ESDE_MASK)
+  if(((int_buffer & ESDE_MASK) == ESDE_MASK) && state == DATA)
   {
+    //Serial.println(ESDE_MASK, BIN);
+    Serial.println("DATA MASK MATCH");
     return 1;
-  } else if ((int_buffer & SYNC_SYMBOL) == SYNC_SYMBOL) { // clear string and get ready for new data
-    if(state == DATA) return 1; // if sync was already detected just wait for data
-    else return 2; // if state was IDLE then complete on SYNC procedure
-  } else if ((int_buffer & STOP_SYMBOL) == STOP_SYMBOL) { // do w/e with completed message
+  } else if (((int_buffer & WORD_MASK) == SYNC_SYMBOL) && state == IDLE) { // clear string and get ready for new data
+    Serial.println("SYNC MASK MATCH");
+    return 2; // if state was IDLE then complete on SYNC procedure
+  } else if (((int_buffer & WORD_MASK) == STOP_SYMBOL) && state == DATA) { // do w/e with completed message
+    Serial.println("STOP MASK MATCH");
     return 3;
   }
-  
   return -1; // current buffer is not valid data
 }
 
