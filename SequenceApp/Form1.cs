@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,19 +14,25 @@ namespace SequenceApp
 {
     public partial class Form1 : Form, iForm1
     {
-        Bitmap FADE_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\sine_wave.png");                                          
-        Bitmap FLASH_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\square_wave.png");
+        Bitmap FADE_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\Frontend Assets\sine_wave.png");                                          
+        Bitmap FLASH_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\Frontend Assets\square_wave.png");
+
+        const int NUM_ROW_CELLS = 50;
 
         public Form1()
         {
             InitializeComponent();
 
+            // initialize Serial Initialize
+            var ports = SerialPort.GetPortNames();
+            comComboBox.DataSource = ports;
+
             // initialize rows/columns
             seqDataGridView.DefaultCellStyle.SelectionForeColor = Color.Gray;
             seqDataGridView.RowCount = 4;
             seqDataGridView.AllowDrop = true;
-            var columns = new DataGridViewCustomColumn[50];
-            for (int i = 0; i < 50; i++)
+            var columns = new DataGridViewCustomColumn[NUM_ROW_CELLS];
+            for (int i = 0; i < NUM_ROW_CELLS; i++)
             {
                 columns[i]= new DataGridViewCustomColumn();
                 columns[i].Width = seqDataGridView.Rows[0].Height + 2;
@@ -62,13 +69,15 @@ namespace SequenceApp
 
         private void recalculateColor(int row, int column)
         {
+            /*
             if (row == 3)
             {
                 seqDataGridView.Rows[0].Cells[column].Style.BackColor = Color.Black;
                 seqDataGridView.Rows[1].Cells[column].Style.BackColor = Color.Black;
                 seqDataGridView.Rows[2].Cells[column].Style.BackColor = Color.Black;
             }
-            else
+            */
+            if (row != 3)
             {
                 int R, G, B;
                 R = G = B = 0;
@@ -79,6 +88,7 @@ namespace SequenceApp
             }
         }
 
+        /*
         private void recalculateMode(CellModeEvaluation evaluation)
         {
             foreach (int col in evaluation.normalTouchedRows)
@@ -107,7 +117,7 @@ namespace SequenceApp
                 }
             }
         }
-
+        */
         // UI Handlers
 
         public event Action<CellData[,]> ExportClicked;
@@ -135,37 +145,59 @@ namespace SequenceApp
             if (seqDataGridView.SelectedCells.Count > 1)
             {
                 var selected = seqDataGridView.SelectedCells;
-                bool changeAll = false;
                 bool isCRow = false;
                 int selectedIndex = selected.Count - 1;
 
+                DataGridViewCustomCell baseCell = (DataGridViewCustomCell) seqDataGridView.SelectedCells[seqDataGridView.SelectedCells.Count - 1];
+
                 if (selected[selectedIndex].Style.BackColor != seqDataGridView.DefaultCellStyle.BackColor)
                 {
-                    changeAll = true;
-
                     if (selected[selectedIndex].RowIndex == 3)
                         isCRow = true;
-
+                    
                     foreach (DataGridViewCell c in seqDataGridView.SelectedCells)
-                    {
-                        if (changeAll && c.RowIndex == selected[selectedIndex].RowIndex && c.RowIndex == selected[selectedIndex].RowIndex)
+                    {                                                                    //  c.RowIndex == selected[selectedIndex].RowIndex
+                        DataGridViewCustomCell cell = (DataGridViewCustomCell)c;
+                        Color color = seqDataGridView.Rows[selected[selectedIndex].RowIndex].Cells[selected[selectedIndex].ColumnIndex].Style.BackColor;
+                        if (!isCRow)
                         {
-                            Color color = seqDataGridView.Rows[selected[selectedIndex].RowIndex].Cells[selected[selectedIndex].ColumnIndex].Style.BackColor;
-                            if (!isCRow)
-                                c.Style.BackColor = color;
-                            else
+                            if(cell.RowIndex == baseCell.RowIndex)
                             {
-                                int col = c.ColumnIndex;
-                                c.Style.BackColor = selected[selectedIndex].Style.BackColor;
-                                seqDataGridView.Rows[0].Cells[col].Style.BackColor = Color.FromArgb(color.R, 0, 0);
-                                seqDataGridView.Rows[1].Cells[col].Style.BackColor = Color.FromArgb(0, color.G, 0);
-                                seqDataGridView.Rows[2].Cells[col].Style.BackColor = Color.FromArgb(0, 0, color.B);
-                                seqDataGridView.Rows[3].Cells[col].Style.BackColor = color;
+                                cell.Style.BackColor = baseCell.Style.BackColor;//color;
+                                cell.mode = baseCell.mode;
+                                cell.rate = baseCell.rate;
                             }
-                        } else
-                        {
-                            c.Style.BackColor = c.Style.BackColor;
                         }
+                        else
+                        {
+                            int col = c.ColumnIndex;
+                            DataGridViewCustomCell redCell      = (DataGridViewCustomCell)seqDataGridView.Rows[0].Cells[col];
+                            DataGridViewCustomCell greenCell    = (DataGridViewCustomCell)seqDataGridView.Rows[1].Cells[col];
+                            DataGridViewCustomCell blueCell     = (DataGridViewCustomCell)seqDataGridView.Rows[2].Cells[col];
+                            DataGridViewCustomCell colorCell    = (DataGridViewCustomCell)seqDataGridView.Rows[3].Cells[col];
+                            redCell.Style.BackColor     = Color.FromArgb(baseCell.Style.BackColor.R, 0, 0);
+                            redCell.mode = baseCell.mode;
+                            redCell.rate = baseCell.rate;
+                            greenCell.Style.BackColor   = Color.FromArgb(0, baseCell.Style.BackColor.G, 0);
+                            greenCell.mode = baseCell.mode;
+                            greenCell.rate = baseCell.rate;
+                            blueCell.Style.BackColor    = Color.FromArgb(0, 0, baseCell.Style.BackColor.B);
+                            blueCell.mode = baseCell.mode;
+                            blueCell.rate = baseCell.rate;
+                            colorCell.Style.BackColor = baseCell.Style.BackColor;
+                            colorCell.mode = baseCell.mode;
+                            colorCell.rate = baseCell.rate;
+
+
+                            /*
+                            c.Style.BackColor = selected[selectedIndex].Style.BackColor;
+                            seqDataGridView.Rows[0].Cells[col].Style.BackColor = Color.FromArgb(c.Style.BackColor.R, 0, 0);
+                            seqDataGridView.Rows[1].Cells[col].Style.BackColor = Color.FromArgb(0, c.Style.BackColor.G, 0);
+                            seqDataGridView.Rows[2].Cells[col].Style.BackColor = Color.FromArgb(0, 0, c.Style.BackColor.B);
+                            seqDataGridView.Rows[3].Cells[col].Style.BackColor = color;
+                            */
+                        }
+                        recalculateColor(c.RowIndex, c.ColumnIndex);
                     }
                 }
             }
@@ -269,8 +301,6 @@ namespace SequenceApp
                 for (int i = 0; i < seqDataGridView.SelectedCells.Count; i++)
                 {
                     DataGridViewCustomCell cell = (DataGridViewCustomCell)seqDataGridView.SelectedCells[i];
-                    cell.Value = popup.mode == "Fade" ? FADE_IMAGE :
-                                                        FLASH_IMAGE;
                     cell.rate = popup.rate;
                     cell.mode = popup.mode;
 
@@ -281,7 +311,7 @@ namespace SequenceApp
                 }
                 evaluation.colorTouchedRows = evaluation.colorTouchedRows.Distinct().ToList();
                 evaluation.normalTouchedRows = evaluation.normalTouchedRows.Distinct().ToList();
-                recalculateMode(evaluation);
+                //recalculateMode(evaluation);
             }
         }
 
@@ -295,7 +325,7 @@ namespace SequenceApp
         // export handler
         private void button1_Click_1(object sender, EventArgs e)
         {
-            CellData[,] cells = new CellData[3, 255];
+            CellData[,] cells = new CellData[3, NUM_ROW_CELLS];
             
             for (int row_i = 0; row_i < 3; row_i++)
             {
@@ -311,6 +341,12 @@ namespace SequenceApp
                 }
             }
             ExportClicked(cells);
+        }
+
+        private void comComboBox_DropDown(object sender, EventArgs e)
+        {
+            var ports = SerialPort.GetPortNames();
+            comComboBox.DataSource = ports;
         }
     }
 }

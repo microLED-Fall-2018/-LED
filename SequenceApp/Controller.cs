@@ -10,17 +10,19 @@ namespace SequenceApp
     class Controller
     {
         Form1 window;
+        SequenceExporter exporter;
+
 
         public Controller(Form1 form)
         {
             window = form;
-            
+            exporter = new SequenceExporter();
             window.ExportClicked += ExportClickedHandler;
         }
 
-        public void ExportClickedHandler(CellData[,] colors)
+        public void ExportClickedHandler(CellData[,] cells)
         {
-
+            exporter.export(cells);
         }
     }
 }
