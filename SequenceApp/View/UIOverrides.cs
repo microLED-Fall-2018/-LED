@@ -12,9 +12,11 @@ namespace SequenceApp.View
 {
     public class Images
     {
+        private static string fade_path = Path.Combine(Environment.CurrentDirectory, @"assets\", "sine_wave_small.png");
+        private static string flash_path = Path.Combine(Environment.CurrentDirectory, @"assets\", "square_wave.png");
 
-        public static Bitmap FADE_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\Frontend Assets\sine_wave_small.png");
-        public static Bitmap FLASH_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\Frontend Assets\square_wave.png");
+        public static Bitmap FADE_IMAGE = new Bitmap(fade_path);
+        public static Bitmap FLASH_IMAGE = new Bitmap(flash_path);
     }
 
 

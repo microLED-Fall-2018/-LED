@@ -33,3 +33,16 @@ D:\Desktop\Active HW\Senior Project\-LED\SeniorProjectMVC\obj\Debug\SeniorProjec
 D:\Desktop\Active HW\Senior Project\-LED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.csproj.CopyComplete
 D:\Desktop\Active HW\Senior Project\-LED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.exe
 D:\Desktop\Active HW\Senior Project\-LED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.pdb
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\bin\Debug\SeniorProjectMVC.exe.config
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\bin\Debug\SeniorProjectMVC.exe
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\bin\Debug\SeniorProjectMVC.pdb
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\bin\Debug\Newtonsoft.Json.dll
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\bin\Debug\Newtonsoft.Json.xml
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.csprojAssemblyReference.cache
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.Form1.resources
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.Properties.Resources.resources
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.csproj.GenerateResource.cache
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.csproj.CoreCompileInputs.cache
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.csproj.CopyComplete
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.exe
+D:\Desktop\Active HW\Senior Project\uLED\SeniorProjectMVC\obj\Debug\SeniorProjectMVC.pdb
