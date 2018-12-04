@@ -14,8 +14,8 @@ namespace SequenceApp
 {
     public partial class Form1 : Form, iForm1
     {
-        Bitmap FADE_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\Frontend Assets\sine_wave.png");                                          
-        Bitmap FLASH_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\Frontend Assets\square_wave.png");
+        // Bitmap FADE_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\Frontend Assets\sine_wave.png");                                          
+        // Bitmap FLASH_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\Frontend Assets\square_wave.png");
 
         const int NUM_ROW_CELLS = 50;
 
@@ -47,9 +47,10 @@ namespace SequenceApp
             {
                 for (int c = 0; c < seqDataGridView.ColumnCount; c++)
                 {
-                    Bitmap image = FLASH_IMAGE;
-                    image.SetResolution(10, 10);
-                    seqDataGridView.Rows[r].Cells[c].Value = image;
+                    //Bitmap image = FLASH_IMAGE;
+                    //image.SetResolution(10, 10);
+                    DataGridViewCustomCell cell = (DataGridViewCustomCell)seqDataGridView.Rows[r].Cells[c];
+                    cell.mode = "Fade";
                     seqDataGridView.Rows[r].Cells[c].Style.BackColor = Color.Black;
                 }
             }
