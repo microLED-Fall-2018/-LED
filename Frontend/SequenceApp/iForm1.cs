@@ -9,6 +9,9 @@ namespace SequenceApp
 {
     interface iForm1
     {
+        bool didConnect { set; }
+
         event Action<CellData[,]> ExportClicked;
+        event Action<string> ConnectClicked;
     }
 }

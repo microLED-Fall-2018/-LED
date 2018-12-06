@@ -9,7 +9,7 @@ namespace SequenceApp
 {
     class Controller
     {
-        Form1 window;
+        iForm1 window;
         SequenceExporter exporter;
 
 
@@ -18,11 +18,17 @@ namespace SequenceApp
             window = form;
             exporter = new SequenceExporter();
             window.ExportClicked += ExportClickedHandler;
+            window.ConnectClicked += ConnectClickedHandler;
         }
 
         public void ExportClickedHandler(CellData[,] cells)
         {
             exporter.export(cells);
+        }
+
+        public void ConnectClickedHandler(string comPort)
+        {
+            window.didConnect = exporter.connect(comPort);
         }
     }
 }

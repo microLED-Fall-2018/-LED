@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.seqDataGridView = new System.Windows.Forms.DataGridView();
             this.removeButton = new System.Windows.Forms.Button();
             this.colorPictureBox = new System.Windows.Forms.PictureBox();
@@ -41,30 +41,33 @@
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.comComboBox = new System.Windows.Forms.ComboBox();
+            this.connectButton = new System.Windows.Forms.Button();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.seqDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.colorPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.basePictureBox)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // seqDataGridView
             // 
             this.seqDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.seqDataGridView.ColumnHeadersVisible = false;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.seqDataGridView.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.seqDataGridView.DefaultCellStyle = dataGridViewCellStyle1;
             this.seqDataGridView.Location = new System.Drawing.Point(1, 2);
             this.seqDataGridView.Name = "seqDataGridView";
             this.seqDataGridView.ReadOnly = true;
-            this.seqDataGridView.Size = new System.Drawing.Size(437, 114);
+            this.seqDataGridView.Size = new System.Drawing.Size(315, 114);
             this.seqDataGridView.TabIndex = 0;
             this.seqDataGridView.SelectionChanged += new System.EventHandler(this.seqDataGridView_SelectionChanged);
             this.seqDataGridView.DragDrop += new System.Windows.Forms.DragEventHandler(this.seqDataGridView_DragDrop);
@@ -136,18 +139,18 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.removeButton);
-            this.groupBox2.Location = new System.Drawing.Point(310, 122);
+            this.groupBox2.Location = new System.Drawing.Point(12, 239);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(121, 101);
+            this.groupBox2.Size = new System.Drawing.Size(121, 63);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Management";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(316, 234);
+            this.button1.Location = new System.Drawing.Point(86, 41);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(109, 33);
+            this.button1.Size = new System.Drawing.Size(68, 22);
             this.button1.TabIndex = 2;
             this.button1.Text = "Export";
             this.button1.UseVisualStyleBackColor = true;
@@ -168,19 +171,40 @@
             // comComboBox
             // 
             this.comComboBox.FormattingEnabled = true;
-            this.comComboBox.Location = new System.Drawing.Point(177, 241);
+            this.comComboBox.Location = new System.Drawing.Point(6, 17);
             this.comComboBox.Name = "comComboBox";
-            this.comComboBox.Size = new System.Drawing.Size(121, 21);
+            this.comComboBox.Size = new System.Drawing.Size(148, 21);
             this.comComboBox.TabIndex = 10;
             this.comComboBox.DropDown += new System.EventHandler(this.comComboBox_DropDown);
+            // 
+            // connectButton
+            // 
+            this.connectButton.Location = new System.Drawing.Point(6, 41);
+            this.connectButton.Name = "connectButton";
+            this.connectButton.Size = new System.Drawing.Size(74, 22);
+            this.connectButton.TabIndex = 11;
+            this.connectButton.Text = "Connect";
+            this.connectButton.UseVisualStyleBackColor = true;
+            this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.comComboBox);
+            this.groupBox4.Controls.Add(this.button1);
+            this.groupBox4.Controls.Add(this.connectButton);
+            this.groupBox4.Location = new System.Drawing.Point(139, 239);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(165, 69);
+            this.groupBox4.TabIndex = 12;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Serial Communication";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(440, 320);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.comComboBox);
+            this.ClientSize = new System.Drawing.Size(318, 320);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -193,6 +217,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -211,6 +236,8 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ComboBox comComboBox;
+        private System.Windows.Forms.Button connectButton;
+        private System.Windows.Forms.GroupBox groupBox4;
     }
 }
 

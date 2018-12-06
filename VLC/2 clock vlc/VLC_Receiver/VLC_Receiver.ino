@@ -6,11 +6,13 @@ enum receiver_state {
 };
 String str_buffer = "";
 unsigned int int_buffer; // EXIT/START/8bits DATA/EXIT
-
+unsigned int bit_counter = 0;
+unsigned int data_count = 0;
 enum receiver_state state = IDLE ;
 
 //This defines receiver properties
 #define SENSOR_PIN A3
+#define CATHODE_PIN A4
 #define SYMBOL_HZ 10
 #define SAMPLE_PER_SYMBOL 1
 #define WORD_LENGTH 10 // a byte is encoded as a 10-bit value with start and stop bits
@@ -102,25 +104,25 @@ void setup() {
   Serial.println("Start of receiver program");
   pinMode(13, OUTPUT);
   pinMode(13, HIGH);
-  pinMode(A4, OUTPUT);
-  // pinMode(A3, INPUT); // testing odd behavior
-  digitalWrite(A3, LOW);
-  digitalWrite(A4, LOW);
+  pinMode(CATHODE_PIN, OUTPUT);
+  // pinMode(SENSOR_PIN, INPUT); // testing odd behavior
+  digitalWrite(SENSOR_PIN, LOW);
+  digitalWrite(CATHODE_PIN, LOW);
   startTimer(SYMBOL_HZ * SAMPLE_PER_SYMBOL);
 }
 
 int readLED()
 {
-  pinMode(A3, OUTPUT);
-  digitalWrite(A3, HIGH);
+  pinMode(SENSOR_PIN, OUTPUT);
+  digitalWrite(SENSOR_PIN, HIGH);
 
-  pinMode(A3, INPUT);
-  digitalWrite(A3, LOW);
+  pinMode(SENSOR_PIN, INPUT);
+  digitalWrite(SENSOR_PIN, LOW);
 
   return analogRead(SENSOR_PIN);
 }
 
-#define DIF_THRESHOLD 5
+#define DIF_THRESHOLD 50
 int upper = 0;
 int lower = 0;
 
@@ -140,11 +142,12 @@ int sample_signal(){
   Serial.print(" lower ");
   Serial.print(lower);
   */
+  
   if((sensorValue - upper) > DIF_THRESHOLD) upper = sensorValue;
   if((upper - sensorValue) > DIF_THRESHOLD) lower = sensorValue;
 
-  if((sensorValue - upper) < DIF_THRESHOLD && (upper - sensorValue) < DIF_THRESHOLD) read_val = 1;
-  if((sensorValue - lower) < DIF_THRESHOLD && (lower - sensorValue) < DIF_THRESHOLD) read_val = 0;
+  if((sensorValue - upper) < DIF_THRESHOLD && (upper - sensorValue) < DIF_THRESHOLD) read_val = 0;
+  if((sensorValue - lower) < DIF_THRESHOLD && (lower - sensorValue) < DIF_THRESHOLD) read_val = 1;
   valid_read = (upper - lower) > DIF_THRESHOLD ? 1 : 0;
 
   /*
@@ -158,21 +161,36 @@ int sample_signal(){
     upper = 0;
     lower = 0;
     state = IDLE;
+    bit_counter = 0;
+    data_count = 0;
     int_buffer = 0; // empty buffer
     //clear buffer and set state as desynced
   } else { // valid read
     add_to_buffer(read_val);
+
+    
+    Serial.print(bit_counter);
+    Serial.print(" ");
+    
     Serial.println(int_buffer,BIN);
     isBufferWord = is_buffer_valid_word();
     if (isBufferWord == 1 && state == DATA) { // do something with data
-      Serial.println("DATA");
-      str_buffer += (int_buffer >> 1) & BYTE_MASK; //right shift by 1 to remove start bit and get first 8 bits for byte data
+      if(((bit_counter) % WORD_LENGTH) == 0) {
+        Serial.println("DATA!");
+        str_buffer += (int_buffer >> 1) & BYTE_MASK; //right shift by 1 to remove start bit and get first 8 bits for byte data        
+        data_count ++;
+      }
     } else if (isBufferWord == 2) { // we are now synced and ready to receive data
       Serial.println("SYNC");
+      bit_counter = 0;
+      data_count = 0;
       str_buffer = ""; // clear string buffer for new data
       state = DATA;
     } else if (isBufferWord == 3) { // store data
       state = IDLE;
+    }
+    if(state == DATA) {
+      bit_counter++;
     }
   }
   
@@ -188,12 +206,14 @@ inline void add_to_buffer(unsigned int bit) {
 #define SYNC_SYMBOL 0b1000000001
 #define START_SYMBOL 0b1 // 10 high to low
 #define EXIT_SYMBOL 0b0  // 01 low to high
-#define ESDE_MASK ((START_SYMBOL << 10) | (EXIT_SYMBOL << 9) | START_SYMBOL) //START/EXIT/8 bits DATA/START
-                                                                             //  1  / 0  / ZZZZZZZZ  / 1
+#define FIRST_ESDE_MASK ((START_SYMBOL << 10) | (START_SYMBOL << 9) | EXIT_SYMBOL)
+#define ESDE_MASK ((EXIT_SYMBOL << 10) | (START_SYMBOL << 9) | EXIT_SYMBOL) //EXIT/START/8 bits DATA/EXIT
+                                                                             //  0  / 1  / ZZZZZZZZ  / 0
 #define STOP_SYMBOL 0b0111111110
 #define WORD_MASK 0b1111111111
+
 inline int is_buffer_valid_word() {
-  if(((int_buffer & ESDE_MASK) == ESDE_MASK) && state == DATA)
+  if((((int_buffer & ESDE_MASK) == ESDE_MASK) || (((int_buffer & FIRST_ESDE_MASK) == FIRST_ESDE_MASK) && data_count == 0)) && state == DATA)
   {
     //Serial.println(ESDE_MASK, BIN);
     Serial.println("DATA MASK MATCH");

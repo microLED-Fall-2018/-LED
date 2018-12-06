@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +50,7 @@ namespace SequenceApp
 
         public string getInstructionString()
         {
+            // 
             string instruction = "";
             instruction += fixBinarySize(Convert.ToString(rate, 2), 8);
             instruction += fixBinarySize(Convert.ToString(duration, 2), 8);
@@ -57,6 +60,8 @@ namespace SequenceApp
             instruction += fixBinarySize(modeString, 2);
             instruction += "000";
             instruction += isFinal ? "1" : "0";
+
+            // add *END to end of each instruction
             return instruction;
         }
 
@@ -149,23 +154,56 @@ namespace SequenceApp
         {
             List<Instruction>[] instructions = buildInstructions(data);
             string output_string = "";
+
             for ( int i = 0; i < instructions.Length; i++)
             {
                 output_string += constructChannelString(instructions[i].ToArray());
             }
 
+            map.Save("name.jpg", ImageFormat.Jpeg);
             return false;
         }
 
+        public bool connect(string comPort)
+        {
+            try
+            {
+                var port = new SerialPort(comPort, 9600, Parity.None, 8, StopBits.One);
+                port.Open();
+                port.Write("!.");
+
+            } catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            SerialPort p = (SerialPort)sender;
+            //numberLabel.Text = p.ReadExisting();
+        }
+
+        Bitmap map = new Bitmap(25, 32);
+        int index = 0;
+
         private string constructChannelString( Instruction[] instructions)
         {
+            // last instruction has extra *END
             string channel_output_string = "";
 
-            for(int i = 0; i < instructions.Length; i++)
+            int longest = 0;
+            int current_index = index;
+            for(; index < current_index+instructions.Length; index++)
             {
-
+                string instruction_s = instructions[index].getInstructionString();
+                int output1 = Convert.ToInt32(instruction_s.Substring(0, 7), 2);
+                int output2 = Convert.ToInt32(instruction_s.Substring(8, 15), 2);
+                int output3 = Convert.ToInt32(instruction_s.Substring(16, 23), 2);
+                int output4 = Convert.ToInt32(instruction_s.Substring(24, 32), 2);
+                map.SetPixel(index % 32, index / 32, Color.FromArgb(output1,output2,output3,output4));
             }
-
             return channel_output_string;
         }
 

@@ -14,6 +14,20 @@ namespace SequenceApp
 {
     public partial class Form1 : Form, iForm1
     {
+        bool iForm1.didConnect
+        {
+            set
+            {
+                if(value == false)
+                {
+                    MessageBox.Show("Failed to connect to: " + comComboBox.Text, "Error: Connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } else
+                {
+                    button1.Enabled = true;
+                    connectButton.Text = "Disconnect";
+                }
+            }
+        }
         // Bitmap FADE_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\Frontend Assets\sine_wave.png");                                          
         // Bitmap FLASH_IMAGE = new Bitmap(@"D:\Desktop\Active HW\Senior Project\Frontend Assets\square_wave.png");
 
@@ -22,6 +36,9 @@ namespace SequenceApp
         public Form1()
         {
             InitializeComponent();
+
+            // initialize export button to be disabled
+            button1.Enabled = false;
 
             // initialize Serial Initialize
             var ports = SerialPort.GetPortNames();
@@ -122,6 +139,7 @@ namespace SequenceApp
         // UI Handlers
 
         public event Action<CellData[,]> ExportClicked;
+        public event Action<string> ConnectClicked;
 
         private void removeButton_Click(object sender, EventArgs e)
         {
@@ -348,6 +366,11 @@ namespace SequenceApp
         {
             var ports = SerialPort.GetPortNames();
             comComboBox.DataSource = ports;
+        }
+
+        private void connectButton_Click(object sender, EventArgs e)
+        {
+            ConnectClicked(comComboBox.Text);
         }
     }
 }

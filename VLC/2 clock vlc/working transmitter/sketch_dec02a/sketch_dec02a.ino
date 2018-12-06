@@ -33,9 +33,9 @@ void emit_word(unsigned int w) {
     unsigned char current_bit = w >> word_index;
     Serial.print(current_bit & 0x01);
     if ( current_bit & 0x01 ) {
-      turnOffLED();
-    } else {
       turnOnLED();
+    } else {
+      turnOffLED();
     }
     word_index--;
   }
