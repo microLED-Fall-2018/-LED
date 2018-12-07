@@ -4,7 +4,7 @@ versions:
   api: '1.0'
   backend: 1.4.93
   commit: 9c29f8365cf76e9937d19b1e765a83bc7a80e4e9
-  content: 1.0.1255
+  content: 1.0.1271
   content_pack_name: acme-packs-all
   format: '2'
   frontend: 1.4.1787
@@ -82,6 +82,17 @@ middlewares:
     dependencies:
       USB Device Stack Core Instance: USB_DEVICE_STACK_CORE_INSTANCE
       USB Class CDC: USB_CLASS_CDC
+  PERSISTENT_STORAGE_0:
+    user_label: PERSISTENT_STORAGE_0
+    configuration:
+      conf_max_item_number: 10
+      conf_sector_size: 4096
+      conf_storage_memory_start: 65536
+    definition: Atmel:PERSISTENT_STORAGE:0.0.1::Internal_Flash_Persistent_storage
+    functionality: Persistent_Storage
+    api: Persistent-Storage:Internal-Flash-Ultra:Core
+    dependencies:
+      Flash instance: FLASH_INSTANCE
 drivers:
   GCLK:
     user_label: GCLK
@@ -161,6 +172,19 @@ drivers:
       gclk_gen_7_div: 1
       gclk_gen_7_div_sel: false
       gclk_gen_7_oscillator: Digital Frequency Locked Loop (DFLL48M)
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
+  FLASH_INSTANCE:
+    user_label: FLASH_INSTANCE
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21E18A-AF::NVMCTRL::driver_config_definition::Flash::HAL:Driver:FLASH
+    functionality: Flash
+    api: HAL:Driver:FLASH
+    configuration:
+      nvm_arch_cache: false
+      nvm_arch_read_mode: No Miss Penalty
+      nvm_arch_sleepprm: Wake On Access
     optional_signals: []
     variant: null
     clocks:

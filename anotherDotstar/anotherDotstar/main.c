@@ -81,6 +81,8 @@ int main(void)
 	NVIC_EnableIRQ(EIC_IRQn);
 	NVIC_SetPriority(EIC_IRQn, 9);
 	
+	PORT->Group[0].OUT.reg |= 1 << 10;
+	
 	adc_sync_enable_channel(&ADC_0, 6);
 	
 	while (1)
@@ -93,7 +95,7 @@ int main(void)
 		utoa(buffer[0], number, 10);
 		serialWriteString(strcat(number,"\r\n\0"));
 		
-		PORT->Group[0].OUTTGL.reg = 1 << 10;
+//		PORT->Group[0].OUTTGL.reg = 1 << 10;
 		delay_ms(10);
 	}
 }

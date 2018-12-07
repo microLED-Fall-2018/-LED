@@ -21,6 +21,8 @@ extern "C" {
 #include <hal_io.h>
 #include <hal_sleep.h>
 
+#include <hal_flash.h>
+
 #include <hal_spi_m_sync.h>
 #include <tc_lite.h>
 #include <tc_lite.h>
@@ -30,7 +32,11 @@ extern "C" {
 
 #include "hal_usb_device.h"
 
+extern struct flash_descriptor      FLASH_INSTANCE;
 extern struct spi_m_sync_descriptor SPI_0;
+
+void FLASH_INSTANCE_init(void);
+void FLASH_INSTANCE_CLOCK_init(void);
 
 void SPI_0_PORT_init(void);
 void SPI_0_CLOCK_init(void);

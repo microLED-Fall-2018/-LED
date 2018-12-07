@@ -15,6 +15,20 @@
 
 struct spi_m_sync_descriptor SPI_0;
 
+struct flash_descriptor FLASH_INSTANCE;
+
+void FLASH_INSTANCE_CLOCK_init(void)
+{
+
+	_pm_enable_bus_clock(PM_BUS_APBB, NVMCTRL);
+}
+
+void FLASH_INSTANCE_init(void)
+{
+	FLASH_INSTANCE_CLOCK_init();
+	flash_init(&FLASH_INSTANCE, NVMCTRL);
+}
+
 void SPI_0_PORT_init(void)
 {
 
@@ -209,6 +223,8 @@ void USB_DEVICE_INSTANCE_init(void)
 void system_init(void)
 {
 	init_mcu();
+
+	FLASH_INSTANCE_init();
 
 	SPI_0_init();
 
