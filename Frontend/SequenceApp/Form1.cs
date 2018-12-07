@@ -140,6 +140,8 @@ namespace SequenceApp
 
         public event Action<CellData[,]> ExportClicked;
         public event Action<string> ConnectClicked;
+        public event Action<bool> ProgramChecked;
+        public event Action<int> SlotChanged;
 
         private void removeButton_Click(object sender, EventArgs e)
         {
@@ -249,23 +251,23 @@ namespace SequenceApp
             {
                 int column = seqDataGridView.HitTest(clientPoint.X, clientPoint.Y).ColumnIndex;
                 int row = seqDataGridView.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
-
-                switch(row)
+                int intensity = Convert.ToInt32(numericUpDown1.Value);
+                switch (row)
                 {
                     case 0:
-                        seqDataGridView.Rows[row].Cells[column].Style.BackColor = Color.Red;
+                        seqDataGridView.Rows[row].Cells[column].Style.BackColor = Color.FromArgb(intensity, 0, 0);
                         break;
                     case 1:
-                        seqDataGridView.Rows[row].Cells[column].Style.BackColor = Color.FromArgb(0, 255, 0);
+                        seqDataGridView.Rows[row].Cells[column].Style.BackColor = Color.FromArgb(0, intensity, 0);
                         break;
                     case 2:
-                        seqDataGridView.Rows[row].Cells[column].Style.BackColor = Color.Blue;
+                        seqDataGridView.Rows[row].Cells[column].Style.BackColor = Color.FromArgb(0, 0, intensity);
                         break;
                     case 3:
-                        seqDataGridView.Rows[0].Cells[column].Style.BackColor = Color.Red; //R
-                        seqDataGridView.Rows[1].Cells[column].Style.BackColor = Color.FromArgb(0,255,0); //G
-                        seqDataGridView.Rows[2].Cells[column].Style.BackColor = Color.Blue; //B
-                        seqDataGridView.Rows[3].Cells[column].Style.BackColor = Color.White;
+                        seqDataGridView.Rows[0].Cells[column].Style.BackColor = Color.FromArgb(intensity, 0, 0); //R
+                        seqDataGridView.Rows[1].Cells[column].Style.BackColor = Color.FromArgb(0, intensity, 0); //G
+                        seqDataGridView.Rows[2].Cells[column].Style.BackColor = Color.FromArgb(0, 0, intensity); //B
+                        seqDataGridView.Rows[3].Cells[column].Style.BackColor = Color.FromArgb(intensity, intensity, intensity);
                         break;
                 }
                 recalculateColor(row, column);
@@ -276,10 +278,13 @@ namespace SequenceApp
                 int column = seqDataGridView.HitTest(clientPoint.X, clientPoint.Y).ColumnIndex;
                 string[] rgbs = e.Data.GetData(DataFormats.Text).ToString().Split(null);
 
-                seqDataGridView.Rows[0].Cells[column].Style.BackColor = Color.FromArgb(Int32.Parse(rgbs[0]), 0, 0); //R
-                seqDataGridView.Rows[1].Cells[column].Style.BackColor = Color.FromArgb(0, Int32.Parse(rgbs[1]), 0); //G
-                seqDataGridView.Rows[2].Cells[column].Style.BackColor = Color.FromArgb(0, 0, Int32.Parse(rgbs[2])); //B
-                seqDataGridView.Rows[3].Cells[column].Style.BackColor = Color.FromArgb(Int32.Parse(rgbs[0]), Int32.Parse(rgbs[1]), Int32.Parse(rgbs[2]));
+                if(column > 0)
+                {
+                    seqDataGridView.Rows[0].Cells[column].Style.BackColor = Color.FromArgb(Int32.Parse(rgbs[0]), 0, 0); //R
+                    seqDataGridView.Rows[1].Cells[column].Style.BackColor = Color.FromArgb(0, Int32.Parse(rgbs[1]), 0); //G
+                    seqDataGridView.Rows[2].Cells[column].Style.BackColor = Color.FromArgb(0, 0, Int32.Parse(rgbs[2])); //B
+                    seqDataGridView.Rows[3].Cells[column].Style.BackColor = Color.FromArgb(Int32.Parse(rgbs[0]), Int32.Parse(rgbs[1]), Int32.Parse(rgbs[2]));
+                }
             }
         }
 
@@ -371,6 +376,23 @@ namespace SequenceApp
         private void connectButton_Click(object sender, EventArgs e)
         {
             ConnectClicked(comComboBox.Text);
+        }
+
+
+        // SlotComboBoxChanged(slotComboBox.Text);
+        // not needed for intensity value on single slot
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void programCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            ProgramChecked(programCheckBox.Checked);
+        }
+
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+            SlotChanged(Convert.ToInt32(numericUpDown2.Value));
         }
     }
 }

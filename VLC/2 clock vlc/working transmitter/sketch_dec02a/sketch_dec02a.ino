@@ -19,6 +19,7 @@ int word_index = -1;
 int buffer_index = 0;
 unsigned int current_word = 0;
 unsigned int word_buffer[38] = {0,0,0,0,0b111000010,0b1011100110,0b1011100110};
+String s_buffer = "";
 
 // function inits
 void startTimer(int frequencyHz);
@@ -64,22 +65,73 @@ void write_buffer() {
   }
 }
 
+void write_char(char c) {
+  unsigned int char_w = 1 << 9 | c << 1 | 0;
+  Serial.print("\nwriting word ");
+  char_w = c << 1;
+  char_w |= 1 << 9;
+  Serial.println(char_w, BIN);
+  current_word = char_w;
+  word_index = WORD_LENGTH-1;
+}
+bool transmit_ended = false;
+char sync = 0b1000000001;
+char stop = 0b0111111110;
+int current_index = 0;
+void write_string() {
+  String s = "test";
 
-void write_string(String s) {
-  
+  const unsigned int s_size = s.length();
+  if(word_index < 0) {
+    if(current_word == EXIT_SYMBOL) {
+      //stop everything
+    }
+    if(buffer_index == -1) {
+      write_word(SYNC_SYMBOL);
+      buffer_index++;
+    }
+    if(buffer_index == s_size) {
+      write_word(EXIT_SYMBOL);
+      buffer_index=-1;
+      transmit_ended = true;
+    }
+    if(buffer_index < s_size) {
+      Serial.print(" current index = ");
+      Serial.println(buffer_index);
+      write_char(s[buffer_index]);
+      buffer_index++;
+    }
+  }
 }
 
 void emit_bit() {
   emit_word(current_word);
 }
 
+#define LENGTH 3
+
 void init_frame(){
   memset(word_buffer, 0xAA, 4*4);   // fill first 4 bytes at pointer frame with 0xAA
   word_buffer[4] = SYNC_SYMBOL;  // 4th position is SYNC symbol
   // memcpy(&(frame[5]), data, data_size); // copy data into the 6th entry of frame and beyond
-  word_buffer[5 + 2] = EXIT_SYMBOL;           // set the exit bit after 
+  word_buffer[LENGTH + 4] = EXIT_SYMBOL;           // set the exit bit after 
 }
+/*
+void setup_frame(String data) {
+  int length = data.length();
+  char sync_c = 0b1000000001;
+  char end_c = 0b0111111110;
+  
+  s_buffer = malloc(strlen(data) + 2); // 1 for start 1 for stop bit
+  s_buffer[0] = sync_c;
+  strcpy(&(s_buffer[1]), data);
+  s_buffer[length+1] = end_c;
 
+  for(int i = 0; i < length+2; i ++) {
+    
+  }
+}
+*/
 void setup() {
   // put your setup code here, to run once:
   init_frame();
@@ -92,7 +144,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  write_buffer();
+  write_string();
 }
 
 

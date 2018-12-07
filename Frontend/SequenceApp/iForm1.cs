@@ -11,6 +11,8 @@ namespace SequenceApp
     {
         bool didConnect { set; }
 
+        event Action<bool> ProgramChecked;
+        event Action<int> SlotChanged;
         event Action<CellData[,]> ExportClicked;
         event Action<string> ConnectClicked;
     }

@@ -117,7 +117,7 @@ int readLED()
   digitalWrite(SENSOR_PIN, HIGH);
 
   pinMode(SENSOR_PIN, INPUT);
-  digitalWrite(SENSOR_PIN, LOW);
+  //digitalWrite(SENSOR_PIN, LOW);
 
   return analogRead(SENSOR_PIN);
 }
@@ -134,14 +134,14 @@ int sample_signal(){
   int isBufferWord = 0;
   char byte_word;
 
-  /*
+  
   Serial.print("Read ");
   Serial.print(sensorValue);
   Serial.print(" upper ");
   Serial.print(upper);
   Serial.print(" lower ");
   Serial.print(lower);
-  */
+  
   
   if((sensorValue - upper) > DIF_THRESHOLD) upper = sensorValue;
   if((upper - sensorValue) > DIF_THRESHOLD) lower = sensorValue;
@@ -150,10 +150,10 @@ int sample_signal(){
   if((sensorValue - lower) < DIF_THRESHOLD && (lower - sensorValue) < DIF_THRESHOLD) read_val = 1;
   valid_read = (upper - lower) > DIF_THRESHOLD ? 1 : 0;
 
-  /*
+  
   Serial.print(" ");
   Serial.println(read_val);
-  */
+  
   // desync, reset
   // without this the program cannot gracefully recover from desyncs that involve lower and upper meeting
   if(((upper - lower) < DIF_THRESHOLD || read_val == -1) && (upper != 0 && lower != 0)) {

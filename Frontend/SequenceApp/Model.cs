@@ -12,20 +12,15 @@ namespace SequenceApp
     class Instruction
     {
         private int _color;
-        
+
         public int color { get => _color; set => _color = value; }
         public string mode { get; set; }
         public int duration { get; set; }
         public int intensity { get; set; }
         public int rate { get; set; }
         public bool isFinal { get; set; } = false;
-        
-        // 8 bits | 8 bits | 8 bits | 2 bits | 2 bits | 3 bits | 1 bit
-        // rate   | beats  | intnsty| color c| action |  xxxx  | final
-        // 31-24  | 23-16  | 15-8   | 7-6    | 5-4    |   3-1  | 0
-        // actions: flash, fade, ramp up, ramp down
 
-        public Instruction() {}
+        public Instruction() { }
 
         public Instruction(int rate, int color, string mode, int intensity)
         {
@@ -48,20 +43,78 @@ namespace SequenceApp
             return new CellData() { rate = rate, color = color, mode = mode, intensity = intensity };
         }
 
-        public string getInstructionString()
+        
+        // 8 bits | 8 bits | 8 bits | 2 bits | 2 bits | 3 bits | 1 bit
+        // rate   | beats  | intnsty| color c| action |  xxxx  | final
+        // 31-24  | 23-16  | 15-8   | 7-6    | 5-4    |   3-1  | 0
+        // actions: flash, fade, ramp up, ramp down
+
+        // 8 bits | 8 bits | 8 bits | 8 bits
+        // instr  | rate   | dur    | intensity
+        // instr  =  7:6   | 5:4    | 3:1    | 0
+        //          color  | type   | unused | is last
+        private int modeToInt(string mode)
         {
-            // 
+            int modeInt = 0;
+            switch (mode)
+            {
+                case "Flash":
+                    modeInt = 0;
+                    break;
+                case "Fade":
+                    modeInt = 1;
+                    break;
+                case "Ramp Up":
+                    modeInt = 2;
+                    break;
+                case "Ramp Down":
+                    modeInt = 3;
+                    break;
+            }
+            return modeInt;
+        }
+
+        public byte[] getInstructionBytes()
+        {
             string instruction = "";
-            instruction += fixBinarySize(Convert.ToString(rate, 2), 8);
-            instruction += fixBinarySize(Convert.ToString(duration, 2), 8);
-            instruction += fixBinarySize(Convert.ToString(intensity, 2), 8);
+            byte[] instr = new byte[4];
+            // Instruction
+            instruction += fixBinarySize(Convert.ToString(color, 2),2);
+            instruction += fixBinarySize(Convert.ToString(modeToInt(mode), 2),2);
+            instruction += "000";
+            instruction += isFinal ? "1" : "0";
+            instr[0] = Convert.ToByte(Convert.ToInt32(instruction, 2));
+            // Rate
+            instruction = fixBinarySize(Convert.ToString(rate, 2), 8);
+            instr[1] = Convert.ToByte(Convert.ToInt32(instruction, 2));
+            // Duration
+            instruction = fixBinarySize(Convert.ToString(duration, 2), 8);
+            instr[2] = Convert.ToByte(Convert.ToInt32(instruction, 2));
+            // Intensity
+            instruction = fixBinarySize(Convert.ToString(intensity, 2), 8);
+            instr[3] = Convert.ToByte(Convert.ToInt32(instruction, 2));
+            /*
             instruction += fixBinarySize(Convert.ToString(color, 2), 2);
             string modeString = Convert.ToString(mode == "Flash" ? 0 : mode == "Fade" ? 1 : 2, 2);
             instruction += fixBinarySize(modeString, 2);
             instruction += "000";
             instruction += isFinal ? "1" : "0";
+            */
+            return instr;
+        }
 
-            // add *END to end of each instruction
+        public string getInstructionString()
+        {
+            string instruction = "";
+
+            instruction += fixBinarySize(Convert.ToString(color, 2), 2);
+            instruction += fixBinarySize(Convert.ToString(modeToInt(mode), 2), 2);
+            instruction += "000";
+            instruction += isFinal ? "1" : "0";
+            instruction += fixBinarySize(Convert.ToString(rate, 2), 8);
+            instruction += fixBinarySize(Convert.ToString(duration, 2), 8);
+            instruction += fixBinarySize(Convert.ToString(intensity, 2), 8);
+
             return instruction;
         }
 
@@ -69,7 +122,8 @@ namespace SequenceApp
         {
             if (binary.Length < size)
             {
-                for(int i = 0; i < size - binary.Length; i++)
+                int length = binary.Length;
+                for (int i = 0; i < size - length; i++)
                 {
                     binary = "0" + binary;
                 }
@@ -145,22 +199,28 @@ namespace SequenceApp
 
     public class SequenceExporter
     {
+        SerialPort port;
+        bool isConnected;
+        
         public SequenceExporter()
         {
-
+            isConnected = false;
         }
 
-        public bool export(CellData[,] data)
+        public bool export(CellData[,] data, int slot, bool willProgram)
         {
-            List<Instruction>[] instructions = buildInstructions(data);
-            string output_string = "";
-
-            for ( int i = 0; i < instructions.Length; i++)
+            if(isConnected)
             {
-                output_string += constructChannelString(instructions[i].ToArray());
+                List<Instruction>[] instructions = buildInstructions(data);
+
+                string output_string = constructSequenceString(instructions, slot, willProgram);
+                //port.WriteLine("*PVWWOW*END*END");
+                //port.Write(output_string.ToCharArray(),0, output_string.Length);
+                //port.Write("*PVWCrud before this*END*END");
+                port.Write(output_string);
+                return true;
             }
 
-            map.Save("name.jpg", ImageFormat.Jpeg);
             return false;
         }
 
@@ -168,9 +228,10 @@ namespace SequenceApp
         {
             try
             {
-                var port = new SerialPort(comPort, 9600, Parity.None, 8, StopBits.One);
+                port = new SerialPort(comPort, 9600, Parity.None, 8, StopBits.One);
                 port.Open();
                 port.Write("!.");
+                isConnected = true;
 
             } catch
             {
@@ -185,26 +246,49 @@ namespace SequenceApp
             //numberLabel.Text = p.ReadExisting();
         }
 
-        Bitmap map = new Bitmap(25, 32);
-        int index = 0;
-
-        private string constructChannelString( Instruction[] instructions)
+        
+        private string constructSequenceString(List<Instruction>[] instructions, int slot, bool willProgram)
         {
-            // last instruction has extra *END
-            string channel_output_string = "";
+            // original was 25 x 32
+            Bitmap map = new Bitmap(16, 16);
 
-            int longest = 0;
-            int current_index = index;
-            for(; index < current_index+instructions.Length; index++)
+            // last instruction has extra *END
+
+            string header = "";
+            if(willProgram)
             {
-                string instruction_s = instructions[index].getInstructionString();
-                int output1 = Convert.ToInt32(instruction_s.Substring(0, 7), 2);
-                int output2 = Convert.ToInt32(instruction_s.Substring(8, 15), 2);
-                int output3 = Convert.ToInt32(instruction_s.Substring(16, 23), 2);
-                int output4 = Convert.ToInt32(instruction_s.Substring(24, 32), 2);
-                map.SetPixel(index % 32, index / 32, Color.FromArgb(output1,output2,output3,output4));
+                header = "*" + slot.ToString() + slot.ToString() + slot.ToString();
+            } else
+            {
+                header = "*PVW";
             }
-            return channel_output_string;
+            string sequence_output_string = header;
+
+            List<Instruction> instruction_l = new List<Instruction>();
+
+            for(int i = 0; i < instructions.Length; i++)
+            {
+                for(int j = 0; j < instructions[i].Count; j++)
+                {
+                    instruction_l.Add(instructions[i][j]);
+                }
+            }
+
+            for (int i = 0; i < instruction_l.Count; i++)
+            {
+                //byte[] instruction_s = instruction_l[i].getInstructionBytes();
+                //int output1 = Convert.ToInt32(instruction_s[0]);
+                //int output2 = Convert.ToInt32(instruction_s[1]);
+                //int output3 = Convert.ToInt32(instruction_s[2]);
+                //int output4 = Convert.ToInt32(instruction_s[3]);
+                //map.SetPixel(i % 16, i / 16, Color.FromArgb(output1,output2,output3,output4));
+                //sequence_output_string += Encoding.UTF8.GetString(instruction_s, 0, instruction_s.Length);
+                sequence_output_string += instruction_l[i].getInstructionString();
+            }
+
+            sequence_output_string += "*END*END";
+            //map.Save("pattern.jpg", ImageFormat.Jpeg);
+            return sequence_output_string;
         }
 
         private List<Instruction>[] buildInstructions(CellData[,] data)
@@ -228,6 +312,15 @@ namespace SequenceApp
                         channelInstructions[i].Add(new Instruction(data[i,c]));
                         current = channelInstructions[i][channelInstructions[i].Count - 1];
                     }
+                }
+                if(current.rate == 5 && current.mode == "Fade" && current.intensity == 0)
+                {
+                    channelInstructions[i].Remove(current);
+                }
+                if(channelInstructions[i].Count > 0)
+                {
+                    current = channelInstructions[i].Last();
+                    current.isFinal = true;
                 }
             }
 
